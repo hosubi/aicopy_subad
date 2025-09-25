@@ -1,0 +1,88 @@
+{
+  "name": "AI 카피라이터 - 자영업자 마케팅 도구",
+  "short_name": "AICOPY",
+  "description": "AI가 만드는 마케팅 카피로 매출을 올리세요. 네이버, 인스타그램, 메뉴 설명 등 다양한 카피 자동 생성",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFEB3B",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ko-KR",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "인스타그램 캡션",
+      "short_name": "인스타 캡션",
+      "description": "인스타그램 캡션 생성기",
+      "url": "/social/instagram-caption.html",
+      "icons": [{ "src": "/icons/instagram-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "메뉴 설명",
+      "short_name": "메뉴 설명",
+      "description": "메뉴 설명 카피 생성기",
+      "url": "/business/menu-description.html",
+      "icons": [{ "src": "/icons/menu-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "네이버 플레이스",
+      "short_name": "플레이스",
+      "description": "네이버 플레이스 카피 생성기",
+      "url": "/g/place-copy.html",
+      "icons": [{ "src": "/icons/naver-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": []
+}

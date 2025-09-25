@@ -1,0 +1,7 @@
+# ads.txt for AICOPY
+# Google AdSense
+google.com, pub-2658372907170284, DIRECT, f08c47fec0942fa0
+
+# Placeholder for future ad networks
+# Example format:
+# advertising-network.com, publisher-id, DIRECT/RESELLER, certification-authority-id

@@ -1,0 +1,198 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- SEO 메타 태그 -->
+<title>유튜브 쇼츠 제목 생성기 - 조회수 폭발 보장 | AICOPY</title>
+<meta name="description" content="AI가 만드는 클릭률 높은 유튜브 쇼츠 제목. 알고리즘 최적화로 조회수와 구독자 증가. 무료 쇼츠 제목 자동 생성">
+<meta name="keywords" content="유튜브 쇼츠, 쇼츠 제목, 유튜브 제목, 조회수 늘리기, 구독자 증가, AI 제목 생성">
+<meta name="author" content="SUBAD.KR">
+
+<!-- Open Graph -->
+<meta property="og:title" content="유튜브 쇼츠 제목 생성기 - 조회수 UP">
+<meta property="og:description" content="10초 안에 시선을 사로잡는 유튜브 쇼츠 제목을 AI가 작성합니다">
+<meta property="og:image" content="https://aicopy.subad.kr/og-youtube.png">
+<meta property="og:url" content="https://aicopy.subad.kr/social/youtube-shorts.html">
+<meta property="og:type" content="website">
+
+<!-- 캐노니컬 URL -->
+<link rel="canonical" href="https://aicopy.subad.kr/social/youtube-shorts.html">
+
+<!-- Styles & Scripts -->
+<link rel="stylesheet" href="../assets/style.css" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284" crossorigin="anonymous"></script>
+<script src="../assets/app.js" defer></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="header-container">
+    <div class="header-row">
+      <strong class="logo">AICOPY</strong>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="desktop-nav">
+        <a href="/" class="nav-link">홈</a>
+        <a href="/social/instagram-caption.html" class="nav-link">인스타그램</a>
+        <a href="/social/threads-copy.html" class="nav-link">쓰레드</a>
+        <a href="/social/youtube-shorts.html" class="nav-link active">유튜브</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- 모바일 사이드바 -->
+<div class="mobile-sidebar" id="mobileSidebar">
+  <div class="sidebar-header">
+    <strong>AICOPY</strong>
+    <button class="close-sidebar" id="closeSidebar" aria-label="메뉴 닫기">×</button>
+  </div>
+  <nav class="mobile-nav">
+    <a href="/" class="nav-link">홈</a>
+    <a href="/social/instagram-caption.html" class="nav-link">인스타그램 캡션</a>
+    <a href="/social/threads-copy.html" class="nav-link">쓰레드 카피</a>
+    <a href="/social/youtube-shorts.html" class="nav-link active">유튜브 쇼츠</a>
+    <a href="/social/tiktok-script.html" class="nav-link">틱톡 스크립트</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main>
+  <section class="hero-section">
+    <h1 class="hero-title">📹 <span class="highlight">유튜브 쇼츠 제목 생성기</span></h1>
+    <p class="hero-subtitle">1초 만에 클릭하게 만드는 쇼츠 제목으로 조회수를 폭발시키세요</p>
+  </section>
+
+  <!-- 광고 영역 -->
+  <div class="ad-wrap">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2658372907170284"
+         data-ad-slot="7890123456"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <!-- 생성기 -->
+  <section class="generator-section">
+    <h2 class="section-title">🎬 조회수 보장 쇼츠 제목 생성</h2>
+    <div class="generator-container">
+      <div class="tips-section" style="margin-bottom: 24px;">
+        <p><strong>💡 쇼츠 제목 팁:</strong> 영상 내용, 타겟 시청자, 핵심 포인트를 명확히 입력하세요.</p>
+        <p>예시: "1분 운동으로 뱃살 빼기" / "이 꿀팁 모르면 손해" / "월 1000만원 버는 비법"</p>
+      </div>
+      
+      <div class="input-group">
+        <textarea id="kw" placeholder="쇼츠 내용과 핵심 포인트를 입력하세요&#10;예: 집에서 5분만에 라면 맛있게 끓이는 비법" class="input-field" style="height: 80px; resize: vertical;"></textarea>
+      </div>
+      
+      <div class="button-group">
+        <button id="gen" class="btn btn-primary">
+          <span class="btn-text">쇼츠 제목 생성</span>
+          <span class="btn-loading" style="display:none;">생성 중...</span>
+        </button>
+        <button id="copy" class="btn btn-secondary" disabled>
+          <span class="btn-icon">📋</span>
+          <span class="btn-text">복사</span>
+        </button>
+      </div>
+      
+      <div class="output-container">
+        <pre id="out" class="output-box">🎯 쇼츠 내용을 입력하고 생성 버튼을 눌러주세요!
+
+생성되는 제목 특징:
+✅ 호기심 자극
+✅ 60자 이내 최적화
+✅ 검색 키워드 포함
+✅ 감정적 어필</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 쇼츠 제목 공식 -->
+  <section class="tips-section" style="margin: 48px 0; background: var(--bg-light); padding: 32px; border-radius: 16px;">
+    <h3 class="section-title">🏆 조회수 100만 쇼츠 제목 공식</h3>
+    <div class="grid" style="gap: 24px;">
+      <div>
+        <h4 style="color: var(--primary-yellow-dark);">숫자 활용</h4>
+        <p>"3초만에", "100만원", "5가지 방법" 등 구체적인 숫자로 신뢰도 UP</p>
+      </div>
+      <div>
+        <h4 style="color: var(--primary-yellow-dark);">궁금증 유발</h4>
+        <p>"이거 몰랐으면 큰일날뻔", "아무도 모르는", "충격적인 진실" 등</p>
+      </div>
+      <div>
+        <h4 style="color: var(--primary-yellow-dark);">감정 자극</h4>
+        <p>"눈물나는", "소름돋는", "웃긴", "감동적인" 등 감정 표현</p>
+      </div>
+      <div>
+        <h4 style="color: var(--primary-yellow-dark);">트렌드 키워드</h4>
+        <p>현재 유행하는 밈, 챌린지, 이슈 등을 제목에 활용</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 최근 생성 기록 -->
+  <section>
+    <h2 class="section-title">⏰ 최근 생성한 쇼츠 제목</h2>
+    <div id="recent-copy"></div>
+  </section>
+
+  <!-- 하단 광고 -->
+  <div class="ad-wrap">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="autorelaxed"
+         data-ad-client="ca-pub-2658372907170284"
+         data-ad-slot="8901234567"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-bottom">
+      <p>© 2025 AICOPY by SUBAD.KR · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 모바일 메뉴 토글
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const mobileSidebar = document.getElementById('mobileSidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const closeSidebar = document.getElementById('closeSidebar');
+
+mobileMenuToggle.addEventListener('click', () => {
+  mobileSidebar.classList.add('active');
+  sidebarOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeMenu() {
+  mobileSidebar.classList.remove('active');
+  sidebarOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+closeSidebar.addEventListener('click', closeMenu);
+sidebarOverlay.addEventListener('click', closeMenu);
+
+// 유튜브 쇼츠 제목 생성기 설정
+setupGenerator("youtube-shorts");
+</script>
+
+</body></html>

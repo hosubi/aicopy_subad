@@ -1,0 +1,252 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- SEO 메타 태그 -->
+<title>리뷰 답변 생성기 - 단골 고객 만들기 | AICOPY</title>
+<meta name="description" content="AI가 작성하는 진심 어린 리뷰 답변. 긍정/부정 리뷰에 전문적으로 대응하여 고객 만족도와 재방문율 상승">
+<meta name="keywords" content="리뷰 답변, 고객 응대, 네이버 리뷰, 구글 리뷰, 배달앱 리뷰, 평점 관리, AI 답변 생성">
+<meta name="author" content="SUBAD.KR">
+
+<!-- Open Graph -->
+<meta property="og:title" content="리뷰 답변 생성기 - 프로처럼 응대하기">
+<meta property="og:description" content="모든 리뷰에 센스있게 답변하여 단골 고객을 만드세요">
+<meta property="og:image" content="https://aicopy.subad.kr/og-review.png">
+<meta property="og:url" content="https://aicopy.subad.kr/business/review-response.html">
+<meta property="og:type" content="website">
+
+<!-- 캐노니컬 URL -->
+<link rel="canonical" href="https://aicopy.subad.kr/business/review-response.html">
+
+<!-- Styles & Scripts -->
+<link rel="stylesheet" href="../assets/style.css" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284" crossorigin="anonymous"></script>
+<script src="../assets/app.js" defer></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="header-container">
+    <div class="header-row">
+      <strong class="logo">AICOPY</strong>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="desktop-nav">
+        <a href="/" class="nav-link">홈</a>
+        <a href="/business/menu-description.html" class="nav-link">메뉴 설명</a>
+        <a href="/business/event-promotion.html" class="nav-link">이벤트</a>
+        <a href="/business/review-response.html" class="nav-link active">리뷰 답변</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- 모바일 사이드바 -->
+<div class="mobile-sidebar" id="mobileSidebar">
+  <div class="sidebar-header">
+    <strong>AICOPY</strong>
+    <button class="close-sidebar" id="closeSidebar" aria-label="메뉴 닫기">×</button>
+  </div>
+  <nav class="mobile-nav">
+    <a href="/" class="nav-link">홈</a>
+    <div class="nav-separator"></div>
+    <a href="/business/menu-description.html" class="nav-link">메뉴 설명</a>
+    <a href="/business/event-promotion.html" class="nav-link">이벤트 홍보</a>
+    <a href="/business/review-response.html" class="nav-link active">리뷰 답변</a>
+    <a href="/business/kakao-message.html" class="nav-link">카카오 메시지</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main>
+  <section class="hero-section">
+    <h1 class="hero-title">⭐ <span class="highlight">리뷰 답변 생성기</span></h1>
+    <p class="hero-subtitle">진심 어린 답변으로 고객의 마음을 사로잡고 단골로 만드세요</p>
+  </section>
+
+  <!-- 광고 영역 -->
+  <div class="ad-wrap">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2658372907170284"
+         data-ad-slot="9012345678"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <!-- 생성기 -->
+  <section class="generator-section">
+    <h2 class="section-title">💬 센스있는 리뷰 답변 생성</h2>
+    <div class="generator-container">
+      <div class="tips-section" style="margin-bottom: 24px;">
+        <p><strong>💡 입력 팁:</strong> 리뷰 내용과 평점을 함께 입력하면 더 적절한 답변이 생성됩니다.</p>
+        <p>예시: "5점, 음식도 맛있고 사장님도 친절하세요" / "3점, 맛은 괜찮은데 양이 적어요"</p>
+      </div>
+      
+      <div class="input-group">
+        <textarea id="kw" placeholder="리뷰 내용과 평점을 입력하세요&#10;예: 4점, 파스타가 정말 맛있었어요. 다만 웨이팅이 좀 길었네요" class="input-field" style="height: 100px; resize: vertical;"></textarea>
+      </div>
+      
+      <div class="button-group">
+        <button id="gen" class="btn btn-primary">
+          <span class="btn-text">답변 생성</span>
+          <span class="btn-loading" style="display:none;">생성 중...</span>
+        </button>
+        <button id="copy" class="btn btn-secondary" disabled>
+          <span class="btn-icon">📋</span>
+          <span class="btn-text">복사</span>
+        </button>
+      </div>
+      
+      <div class="output-container">
+        <pre id="out" class="output-box">💌 리뷰 내용을 입력하고 생성 버튼을 눌러주세요!
+
+생성되는 답변 특징:
+✅ 진심 어린 감사 표현
+✅ 구체적인 개선 약속
+✅ 재방문 유도
+✅ 전문적인 어조</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 리뷰 답변 가이드 -->
+  <section class="guide-section" style="margin: 48px 0; background: var(--bg-light); padding: 32px; border-radius: 16px;">
+    <h3 class="section-title">📝 평점별 답변 전략</h3>
+    
+    <div style="display: grid; gap: 24px;">
+      <div style="background: var(--bg-white); padding: 20px; border-radius: 12px; border-left: 4px solid #4CAF50;">
+        <h4 style="color: #4CAF50; margin: 0 0 12px 0;">⭐⭐⭐⭐⭐ 5점 리뷰</h4>
+        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+          <li>진심 어린 감사 표현</li>
+          <li>구체적인 칭찬 포인트 언급</li>
+          <li>다음 방문 시 더 나은 서비스 약속</li>
+          <li>다른 메뉴/서비스 추천</li>
+        </ul>
+      </div>
+      
+      <div style="background: var(--bg-white); padding: 20px; border-radius: 12px; border-left: 4px solid #FF9800;">
+        <h4 style="color: #FF9800; margin: 0 0 12px 0;">⭐⭐⭐⭐ 3-4점 리뷰</h4>
+        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+          <li>긍정적인 부분 먼저 인정</li>
+          <li>아쉬운 점에 대한 사과</li>
+          <li>구체적인 개선 계획 제시</li>
+          <li>재방문 시 혜택 안내</li>
+        </ul>
+      </div>
+      
+      <div style="background: var(--bg-white); padding: 20px; border-radius: 12px; border-left: 4px solid #F44336;">
+        <h4 style="color: #F44336; margin: 0 0 12px 0;">⭐⭐ 1-2점 리뷰</h4>
+        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+          <li>진정성 있는 사과</li>
+          <li>문제점 인정 및 공감</li>
+          <li>즉각적인 개선 조치 약속</li>
+          <li>보상 또는 재방문 초대</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 답변 예시 -->
+  <section class="examples-section" style="margin: 48px 0;">
+    <h3 class="section-title">💎 효과적인 리뷰 답변 예시</h3>
+    
+    <div class="example-box" style="background: #E8F5E9; padding: 24px; border-radius: 12px; margin-bottom: 16px;">
+      <p style="margin: 0 0 12px 0;"><strong>긍정 리뷰 답변:</strong></p>
+      <p style="margin: 0; line-height: 1.6;">
+        "안녕하세요, 고객님! 💕<br>
+        저희 가게를 찾아주시고 소중한 리뷰까지 남겨주셔서 진심으로 감사드립니다.<br>
+        고객님께서 맛있게 드셨다니 저희도 정말 기쁩니다!<br>
+        다음에도 더욱 맛있는 음식과 서비스로 보답하겠습니다.<br>
+        곧 새로운 메뉴도 출시 예정이니 많은 관심 부탁드려요~ 😊"
+      </p>
+    </div>
+    
+    <div class="example-box" style="background: #FFF3E0; padding: 24px; border-radius: 12px;">
+      <p style="margin: 0 0 12px 0;"><strong>부정 리뷰 답변:</strong></p>
+      <p style="margin: 0; line-height: 1.6;">
+        "안녕하세요, 고객님.<br>
+        먼저 불편을 드려 진심으로 죄송합니다.<br>
+        말씀해주신 웨이팅 시간 문제는 저희도 인지하고 있으며,<br>
+        현재 주문 시스템 개선과 직원 추가 채용을 진행하고 있습니다.<br>
+        다음 방문 시에는 반드시 개선된 모습을 보여드리겠습니다.<br>
+        소중한 의견 감사드리며, 작은 사과의 마음으로 음료 쿠폰을 보내드렸습니다."
+      </p>
+    </div>
+  </section>
+
+  <!-- 최근 생성 기록 -->
+  <section>
+    <h2 class="section-title">⏰ 최근 생성한 리뷰 답변</h2>
+    <div id="recent-copy"></div>
+  </section>
+
+  <!-- 프로모션 -->
+  <section class="promo-section">
+    <p>리뷰 관리로 매출 올리기</p>
+    <a href="https://class.subad.kr/review-management" target="_blank" class="promo-link">
+      ⭐ 평점 4.8 만들기 리뷰 관리 전략
+    </a>
+    <a href="/g/naver-place.html" class="promo-link">
+      📍 네이버 플레이스 최적화 카피
+    </a>
+  </section>
+
+  <!-- 하단 광고 -->
+  <div class="ad-wrap">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="autorelaxed"
+         data-ad-client="ca-pub-2658372907170284"
+         data-ad-slot="0123456789"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-bottom">
+      <p>© 2025 AICOPY by SUBAD.KR · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 모바일 메뉴 토글
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const mobileSidebar = document.getElementById('mobileSidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const closeSidebar = document.getElementById('closeSidebar');
+
+mobileMenuToggle.addEventListener('click', () => {
+  mobileSidebar.classList.add('active');
+  sidebarOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeMenu() {
+  mobileSidebar.classList.remove('active');
+  sidebarOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+closeSidebar.addEventListener('click', closeMenu);
+sidebarOverlay.addEventListener('click', closeMenu);
+
+// 리뷰 답변 생성기 설정
+setupGenerator("review-response");
+</script>
+
+</body></html>
