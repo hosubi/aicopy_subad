@@ -3,18 +3,18 @@ const CONFIG = {
   // Make.com 웹훅 설정 (페이지별로 다른 웹훅 사용)
   WEBHOOKS: {
     // G폴더 페이지별 웹훅 (8개)
-    "naver-home": "https://hook.make.com/naver-home-webhook",
-    "place-copy": "https://hook.make.com/place-copy-webhook", 
-    "blog-intro": "https://hook.make.com/blog-intro-webhook",
-    "cta": "https://hook.make.com/cta-webhook",
-    "hso": "https://hook.make.com/hso-webhook",
-    "swot": "https://hook.make.com/swot-webhook",
+    "naver-home": "https://hook.eu2.make.com/m1wonq9rwcxyemx4hnedhyylu4p9hpbr",
+    "place-copy": "https://hook.eu2.make.com/n3d1kbidwcj175jiq9lr7wnocukjxukm", 
+    "blog-intro": "https://hook.eu2.make.com/36dn8226jdscprg83vdpndund923pfz4",
+    "cta": "https://hook.eu2.make.com/469b34r723epzhqy6cqfbryijcv78x72",
+    "hso": "https://hook.eu2.make.com/4vikl7bu11rcciw7i89n9wk0nxyvi4pl",
+    "swot": "https://hook.eu2.make.com/a7bw52sj72ghgqqvjov7bskxuk4lxxis",
     "title-banger": "https://hook.eu2.make.com/wj1zi56xcnxtv2nq5rwkjk8lg5n5fbaa",
     "paid-blog": "https://hook.make.com/paid-blog-webhook",
     
     // 소셜미디어 페이지별 웹훅 (2개)
     "instagram-caption": "https://hook.eu2.make.com/jyv69e13xe1bj1dyj7oqpr6m4mzg3e1z",
-    "threads-copy": "https://hook.eu2.make.com/k3z1yt8cetom0na65wioi57v4v1up3bn",
+    "threads-copy": "https://hook.eu2.make.com/6etu7qbrxrow4r6h2fnbnth5hniu16n8",
     
     // 추가 페이지들 (향후 확장용)
     "youtube-shorts": "https://hook.make.com/youtube-webhook",
@@ -228,17 +228,27 @@ function trackAPIUsage(apiKey) {
 
 // === UI 관련 함수 ===
 
-// 최근 카피 표시 (최신 5개만)
+// 최근 카피 표시 (페이지별 개별, 최신 5개만)
 function displayRecentCopies() {
   const recentCopyEl = document.getElementById('recent-copy');
   if (!recentCopyEl) return;
 
-  const recentCopies = JSON.parse(localStorage.getItem('recentCopies') || '[]');
+  // 현재 페이지 타입 확인
+  const currentType = window.currentCopyType || 'title-banger';
+  const storageKey = `recentCopies_${currentType}`;
+  
+  const recentCopies = JSON.parse(localStorage.getItem(storageKey) || '[]');
   const displayCopies = recentCopies.slice(0, 5); // 최신 5개만 표시
   recentCopyEl.innerHTML = '';
 
   if (displayCopies.length === 0) {
-    recentCopyEl.innerHTML = '<p style="color: var(--text-muted); text-align: center;">아직 생성된 카피가 없습니다.</p>';
+    recentCopyEl.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+        <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
+        <p style="margin: 0; font-size: 16px;">아직 생성된 카피가 없습니다.</p>
+        <p style="margin: 8px 0 0 0; font-size: 14px;">위에서 키워드를 입력하고 생성해보세요!</p>
+      </div>
+    `;
     return;
   }
 
@@ -279,7 +289,7 @@ function displayRecentCopies() {
     const clearAllBtn = document.createElement('div');
     clearAllBtn.innerHTML = `
       <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
-        <button onclick="clearAllRecentCopies()" 
+        <button onclick="clearRecentCopies('${currentType}')" 
                 style="padding: 10px 20px; background: #6c757d; color: white; border: none; 
                        border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">
           전체 삭제 (${recentCopies.length}개)
@@ -455,20 +465,33 @@ function setupGenerator(currentType) {
   });
 }
 
-// 최근 카피 저장
+// 최근 카피 저장 (페이지별 개별 저장)
 function saveRecentCopy(text, type) {
-  let recentCopies = JSON.parse(localStorage.getItem('recentCopies') || '[]');
+  if (!text || text.trim() === '') return;
   
-  recentCopies.unshift({
-    text: text,
+  // 페이지별로 다른 저장소 키 사용
+  const storageKey = `recentCopies_${type}`;
+  let recentCopies = JSON.parse(localStorage.getItem(storageKey) || '[]');
+  
+  const newCopy = {
+    text: text.trim(),
     type: CONFIG.COPY_TYPES[type]?.name || type,
-    timestamp: new Date().toISOString()
-  });
+    timestamp: new Date().toISOString(),
+    id: Date.now()
+  };
   
-  // 최대 10개만 저장
+  // 중복 제거
+  recentCopies = recentCopies.filter(item => item.text !== newCopy.text);
+  
+  // 맨 앞에 추가
+  recentCopies.unshift(newCopy);
+  
+  // 최대 10개만 저장 (표시는 5개)
   recentCopies = recentCopies.slice(0, 10);
   
-  localStorage.setItem('recentCopies', JSON.stringify(recentCopies));
+  localStorage.setItem(storageKey, JSON.stringify(recentCopies));
+  
+  console.log(`💾 ${type} 카피 저장됨:`, newCopy);
 }
 
 // === API 키 설정 UI ===
@@ -577,23 +600,94 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// 개별 항목 삭제
+// 개별 항목 삭제 (페이지별)
 function removeRecentCopy(index) {
-  const recentCopies = JSON.parse(localStorage.getItem('recentCopies') || '[]');
+  const currentType = window.currentCopyType || 'title-banger';
+  const storageKey = `recentCopies_${currentType}`;
+  
+  const recentCopies = JSON.parse(localStorage.getItem(storageKey) || '[]');
   if (index >= 0 && index < recentCopies.length) {
     recentCopies.splice(index, 1);
-    localStorage.setItem('recentCopies', JSON.stringify(recentCopies));
+    localStorage.setItem(storageKey, JSON.stringify(recentCopies));
     displayRecentCopies();
     showToast('카피가 삭제되었습니다.');
   }
 }
 
-// 전체 삭제
-function clearAllRecentCopies() {
-  if (confirm('모든 카피 기록을 삭제하시겠습니까?')) {
-    localStorage.removeItem('recentCopies');
+// 전체 삭제 (페이지별)
+function clearRecentCopies(type) {
+  if (confirm('이 페이지의 모든 카피 기록을 삭제하시겠습니까?')) {
+    const storageKey = `recentCopies_${type}`;
+    localStorage.removeItem(storageKey);
     displayRecentCopies();
     showToast('모든 카피가 삭제되었습니다.');
+  }
+}
+
+// 구버전 호환용 (삭제 예정)
+function clearAllRecentCopies() {
+  const currentType = window.currentCopyType || 'title-banger';
+  clearRecentCopies(currentType);
+}
+
+// 페이지별 웹훅 테스트
+async function testPageWebhook(type) {
+  const webhookUrl = CONFIG.WEBHOOKS[type] || CONFIG.WEBHOOKS.default;
+  
+  console.log(`🧪 ${type} 웹훅 테스트 시작:`, webhookUrl);
+  
+  try {
+    const testData = {
+      prompt: "테스트 입력",
+      type: type,
+      userText: "테스트 입력",
+      category: CONFIG.COPY_TYPES[type]?.category || "general",
+      timestamp: new Date().toISOString()
+    };
+    
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(testData)
+    });
+    
+    console.log(`📥 ${type} 응답 상태:`, response.status);
+    const responseText = await response.text();
+    console.log(`📄 ${type} 응답 내용:`, responseText);
+    
+    return { 
+      success: response.ok, 
+      status: response.status, 
+      data: responseText,
+      url: webhookUrl
+    };
+  } catch (error) {
+    console.error(`❌ ${type} 테스트 실패:`, error);
+    return { 
+      success: false, 
+      error: error.message,
+      url: webhookUrl
+    };
+  }
+}
+
+// 전체 페이지 웹훅 테스트
+async function testAllWebhooks() {
+  const pages = [
+    'title-banger', 'naver-home', 'place-copy', 'blog-intro', 
+    'cta', 'hso', 'swot', 'instagram-caption', 'threads-copy'
+  ];
+  
+  console.log('🚀 전체 웹훅 테스트 시작...\n');
+  console.log('실제 URL이 설정된 웹훅:');
+  console.log('- title-banger:', CONFIG.WEBHOOKS['title-banger']);
+  console.log('- instagram-caption:', CONFIG.WEBHOOKS['instagram-caption']);
+  console.log('- threads-copy:', CONFIG.WEBHOOKS['threads-copy']);
+  console.log('\n테스트 시작...\n');
+  
+  for (const page of pages) {
+    const result = await testPageWebhook(page);
+    console.log(`${result.success ? '✅' : '❌'} ${page}:`, result);
   }
 }
 
@@ -604,4 +698,7 @@ window.setupGenerator = setupGenerator;
 window.showAPIKeySettings = showAPIKeySettings;
 window.copyToClipboard = copyToClipboard;
 window.removeRecentCopy = removeRecentCopy;
+window.clearRecentCopies = clearRecentCopies;
 window.clearAllRecentCopies = clearAllRecentCopies;
+window.testPageWebhook = testPageWebhook;
+window.testAllWebhooks = testAllWebhooks;

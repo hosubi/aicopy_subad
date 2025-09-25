@@ -127,21 +127,24 @@
     </div>
   </section>
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
-  crossorigin="anonymous"></script>
-<!-- COPY SUBAD -->
-<ins class="adsbygoogle"
-  style="display:inline-block;width:300px;height:200px"
-  data-ad-client="ca-pub-2658372907170284"
-  data-ad-slot="8145443979"></ins>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+  <div class="ad-wrap">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+    crossorigin="anonymous"></script>
+  <!-- COPY SUBAD -->
+  <ins class="adsbygoogle"
+    style="display:inline-block;width:300px;height:200px"
+    data-ad-client="ca-pub-2658372907170284"
+    data-ad-slot="8145443979"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+  </div>
 
 
   <section class="generator-section">
     <h2 class="section-title">네이버 플레이스 카피 생성기</h2>
-    
+    <P>방문객을 2배 늘리는 매력적인 매장 소개문을 AI가 작성합니다<BR>아래 양식 참고하여 자세히 입력!
+      <BR>매모패드에 복사하여 완성하세요!</P>
     <div class="input-group">
       <input id="kw" placeholder="매장 업종/지역/특징 입력 (예: 강남 이탈리안 레스토랑, 신촌 헤어샵)" class="input-field"/>
     </div>
@@ -178,6 +181,55 @@
     <p>터지는 마케팅 카피라이터 AI 생성한 최근 5개 브라우저에 저장됩니다.</p>
     <div id="recent-copy"></div>
   </section>
+
+   <!-- 고기능 메모패드 -->
+<section class="memo-section" style="margin: 48px 0;">
+  <h2 class="section-title">📝 AI 카피 메모패드</h2>
+  <div class="memo-container" style="background: var(--bg-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+    
+    <!-- 메모 입력 영역 -->
+    <div style="margin-bottom: 20px;">
+      <textarea id="memoArea" placeholder="AI로 생성한 카피를 편집하거나 메모를 작성하세요..." 
+                style="width: 100%; min-height: 200px; padding: 16px; border: 1px solid var(--border-color); 
+                       border-radius: 8px; font-size: 14px; line-height: 1.6; resize: vertical;
+                       font-family: inherit;"></textarea>
+      
+      <!-- 글자수 표시 -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+        <span id="charCount" style="font-size: 12px; color: var(--text-muted);">
+          글자수: 0자 (공백 포함: 0자)
+        </span>
+        <span style="font-size: 12px; color: var(--text-muted);">
+          자동 저장됨
+        </span>
+      </div>
+    </div>
+
+    <!-- 버튼 그룹 -->
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button onclick="copyMemo()" class="btn btn-primary" style="padding: 10px 20px;">
+        📋 복사하기
+      </button>
+      <button onclick="clearMemo()" class="btn btn-secondary" style="padding: 10px 20px;">
+        🗑️ 지우기
+      </button>
+      <button onclick="downloadMemo()" class="btn btn-secondary" style="padding: 10px 20px;">
+        💾 다운로드
+      </button>
+    </div>
+
+    <!-- 공유 기능 -->
+    <!--div class="share-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+      <h3 style="font-size: 16px; margin-bottom: 12px;">🎁 무료 사용 횟수: <span id="usageCount">3</span>회 남음</h3>
+      <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+        친구에게 공유하면 사용 횟수가 2회 추가됩니다! (최대 10회)
+      </p>
+      <button onclick="shareAndGetBonus()" class="btn btn-primary" style="padding: 10px 20px;">
+        🔗 공유하고 횟수 받기
+      </button>
+    </div>
+  </div-->
+</section>
 
 <!-- SEO 블로그 콘텐츠 -->
 <article class="blog-content">
@@ -282,17 +334,18 @@
     <a href="https://class.subad.kr/product/n-%eb%b8%94%eb%a1%9c%ea%b7%b8-%ec%b5%9c%ec%a0%81%ed%99%94-%eb%b9%a0%eb%a5%b8%eb%b9%84%eb%b2%95-pdf-gpt-%ed%94%84%eb%a1%ac%ed%94%84%ed%8a%b8/" class="promo-link small">블로그 최적화 노하우</a>
   </section>
 
+  <!-- 하단 광고 -->
   <div class="ad-wrap">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
     crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-format="autorelaxed"
-      data-ad-client="ca-pub-2658372907170284"
-      data-ad-slot="7949523922"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+<ins class="adsbygoogle"
+    style="display:block"
+    data-ad-format="autorelaxed"
+    data-ad-client="ca-pub-2658372907170284"
+    data-ad-slot="7949523922"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
   </div>
 </main>
 
@@ -308,6 +361,96 @@
     </div>
   </div>
 </footer>
+
+<script>  
+  // === 메모패드 기능 ===
+  
+  // 페이지별 메모 자동 저장
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const memoKey = `memo_${currentPage}`;
+  const usageKey = 'ai_usage_count';
+  
+  // 메모 초기화 및 자동 저장
+  document.addEventListener('DOMContentLoaded', function() {
+    const memoArea = document.getElementById('memoArea');
+    const savedMemo = localStorage.getItem(memoKey);
+    
+    if (memoArea && savedMemo) {
+      memoArea.value = savedMemo;
+      updateCharCount();
+    }
+    
+    // 사용 횟수 초기화
+    initializeUsageCount();
+    
+    // 자동 저장 (타이핑 후 1초)
+    let saveTimeout;
+    if (memoArea) {
+      memoArea.addEventListener('input', function() {
+        updateCharCount();
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          localStorage.setItem(memoKey, memoArea.value);
+          showToast('자동 저장됨', 1000);
+        }, 1000);
+      });
+    }
+  });
+  
+  // 글자수 업데이트
+  function updateCharCount() {
+    const memoArea = document.getElementById('memoArea');
+    const charCount = document.getElementById('charCount');
+    if (memoArea && charCount) {
+      const text = memoArea.value;
+      const charNoSpace = text.replace(/\s/g, '').length;
+      const charWithSpace = text.length;
+      charCount.textContent = `글자수: ${charNoSpace}자 (공백 포함: ${charWithSpace}자)`;
+    }
+  }
+  
+  // 메모 복사
+  function copyMemo() {
+    const memoArea = document.getElementById('memoArea');
+    if (!memoArea.value.trim()) {
+      showToast('복사할 내용이 없습니다.');
+      return;
+    }
+    
+    navigator.clipboard.writeText(memoArea.value)
+      .then(() => showToast('메모가 복사되었습니다!'))
+      .catch(() => showToast('복사 실패. 다시 시도해주세요.'));
+  }
+  
+  // 메모 지우기
+  function clearMemo() {
+    if (confirm('메모를 모두 지우시겠습니까?')) {
+      const memoArea = document.getElementById('memoArea');
+      memoArea.value = '';
+      localStorage.removeItem(memoKey);
+      updateCharCount();
+      showToast('메모가 삭제되었습니다.');
+    }
+  }
+  
+  // 메모 다운로드
+  function downloadMemo() {
+    const memoArea = document.getElementById('memoArea');
+    if (!memoArea.value.trim()) {
+      showToast('다운로드할 내용이 없습니다.');
+      return;
+    }
+    
+    const blob = new Blob([memoArea.value], { type: 'text/plain;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AI카피_메모_${new Date().toLocaleDateString('ko-KR')}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    showToast('메모가 다운로드되었습니다!');
+  }
+  </script>
 
 <script>setupGenerator("place-copy");</script>
 </body></html>
