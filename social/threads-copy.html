@@ -424,7 +424,7 @@ sidebarOverlay.addEventListener('click', closeMenu);
 // === 메모패드 기능 ===
 
 // 페이지별 메모 자동 저장
-const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+const currentPage = window.location.pathname.split('/').pop() || 'threads-copy.html';
 const memoKey = `memo_${currentPage}`;
 const usageKey = 'ai_usage_count';
 
@@ -438,8 +438,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCharCount();
   }
   
-  // 사용 횟수 초기화
-  initializeUsageCount();
+  // 사용 횟수 초기화 (기본값 설정)
+  if (!localStorage.getItem('generateCount')) {
+    localStorage.setItem('generateCount', '0');
+  }
   
   // 자동 저장 (타이핑 후 1초)
   let saveTimeout;
@@ -510,8 +512,107 @@ function downloadMemo() {
 }
 
 
-// 쓰레드 카피 생성기 설정
-setupGenerator("threads-copy");
+// DOMContentLoaded 이벤트에서 생성기 초기화
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔧 DOM 로드 완료, 쓰레드 카피 생성기 초기화');
+  
+  // 약간의 지연 후 setupGenerator 호출 (DOM 완전 로드 보장)
+  setTimeout(() => {
+    setupGenerator("threads-copy");
+    
+    // 추가 안전장치: 직접 이벤트 바인딩
+    const genBtn = document.getElementById('gen');
+    const kwInput = document.getElementById('kw');
+    const outEl = document.getElementById('out');
+    const copyBtn = document.getElementById('copy');
+    
+    console.log('🔍 요소 확인:', {
+      genBtn: !!genBtn,
+      kwInput: !!kwInput,
+      outEl: !!outEl,
+      copyBtn: !!copyBtn
+    });
+    
+    // setupGenerator가 실패한 경우 수동으로 이벤트 바인딩
+    if (genBtn && !genBtn.onclick) {
+      console.log('⚠️ setupGenerator 실패, 수동 바인딩 시작');
+      
+      genBtn.addEventListener('click', async function() {
+        console.log('🚀 생성 버튼 클릭됨');
+        const userText = kwInput.value.trim();
+        
+        if (!userText) {
+          showToast("키워드를 입력해주세요!");
+          kwInput.focus();
+          return;
+        }
+        
+        console.log('📝 입력값:', userText);
+        
+        // 버튼 상태 변경
+        genBtn.disabled = true;
+        const btnText = genBtn.querySelector('.btn-text');
+        const btnLoading = genBtn.querySelector('.btn-loading');
+        
+        if (btnText) btnText.style.display = 'none';
+        if (btnLoading) btnLoading.style.display = 'flex';
+        
+        outEl.textContent = "AI가 쓰레드 카피를 생성하고 있습니다...";
+        copyBtn.disabled = true;
+        
+        try {
+          console.log('🔗 API 호출 시작');
+          const result = await callLLM("threads-copy", userText);
+          console.log('📥 API 결과:', result);
+          
+          outEl.textContent = result || "생성된 결과가 없습니다.";
+          copyBtn.disabled = !result;
+          
+          if (result) {
+            saveRecentCopy(result, "threads-copy");
+            displayRecentCopies();
+            showToast('쓰레드 카피가 생성되었습니다!');
+          }
+          
+        } catch (error) {
+          console.error('❌ API 호출 실패:', error);
+          outEl.textContent = `오류: ${error.message}`;
+          showToast(error.message, 3000);
+        } finally {
+          genBtn.disabled = false;
+          if (btnText) btnText.style.display = 'inline';
+          if (btnLoading) btnLoading.style.display = 'none';
+        }
+      });
+      
+      // 복사 버튼 이벤트
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async function() {
+          const text = outEl.textContent.trim();
+          if (!text || text.includes('오류:')) return;
+          
+          await copyToClipboard(text);
+          
+          const originalText = copyBtn.querySelector('.btn-text').textContent;
+          copyBtn.querySelector('.btn-text').textContent = "복사됨!";
+          setTimeout(() => {
+            copyBtn.querySelector('.btn-text').textContent = originalText;
+          }, 1000);
+        });
+      }
+      
+      // 엔터키로 생성
+      if (kwInput) {
+        kwInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            genBtn.click();
+          }
+        });
+      }
+    }
+  }, 200);
+});
 </script>
 
 </body></html>

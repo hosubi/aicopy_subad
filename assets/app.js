@@ -372,7 +372,24 @@ function setupGenerator(currentType) {
   const copyBtn = $("copy");
   const typeSelect = $("copyType");
 
-  if (!inputEl || !outEl || !genBtn || !copyBtn) return;
+  console.log('🔧 setupGenerator 호출됨:', currentType);
+  console.log('🔍 요소 검색 결과:', {
+    inputEl: !!inputEl,
+    outEl: !!outEl,
+    genBtn: !!genBtn,
+    copyBtn: !!copyBtn,
+    typeSelect: !!typeSelect
+  });
+
+  if (!inputEl || !outEl || !genBtn || !copyBtn) {
+    console.error('❌ 필수 요소를 찾을 수 없습니다:', {
+      inputEl: !!inputEl,
+      outEl: !!outEl,
+      genBtn: !!genBtn,
+      copyBtn: !!copyBtn
+    });
+    return;
+  }
 
   // 현재 카피 타입 설정
   window.currentCopyType = currentType;
@@ -385,7 +402,10 @@ function setupGenerator(currentType) {
 
   // 생성 버튼 클릭
   genBtn.onclick = async () => {
+    console.log('🚀 생성 버튼 클릭됨 (setupGenerator)');
     const userText = inputEl.value.trim();
+    console.log('📝 입력값:', userText);
+    
     if (!userText) {
       showToast("키워드를 입력해주세요!");
       inputEl.focus();
@@ -417,8 +437,11 @@ function setupGenerator(currentType) {
       const userApiKey = localStorage.getItem('userApiKey');
       const useType = typeSelect ? typeSelect.value : currentType;
       
+      console.log('🔗 API 호출 준비:', { useType, userApiKey: !!userApiKey });
+      
       // API 호출
       const result = await callLLMWithUserAPI(useType, userText, userApiKey);
+      console.log('📥 API 결과 수신:', result);
       
       // 결과 표시
       outEl.classList.remove('loading');
