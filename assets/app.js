@@ -169,7 +169,8 @@ async function callLLM(type, userText) {
         userText: cleanText,
         category: copyInfo.category,
         timestamp: new Date().toISOString(),
-        domain: window.location.hostname           // 추가 검증용
+        domain: window.location.hostname,  // 이 부분이 중요!
+        source: "aicopy.subad.kr"          // 추가 검증용
       }),
       signal: controller.signal
     });
