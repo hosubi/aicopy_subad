@@ -72,7 +72,47 @@
 
 <body>
 <!-- 헤더 placeholder -->
-<div id="header-placeholder"></div>
+<header class="header">
+  <div class="header-container">
+    <div class="header-row">
+      <a href="/" class="logo">터마카AI</a>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="desktop-nav">
+        <a href="/" class="nav-link">홈</a>
+        <a href="/index.html" class="nav-link">터지는 제목</a>
+        <a href="/social/instagram-caption.html" class="nav-link">인스타그램</a>
+        <a href="/social/threads-copy.html" class="nav-link">쓰레드</a>
+        <a href="/#business" class="nav-link">자영업자</a>
+      </nav>
+    </div>
+  </div>
+  <!-- 모바일 사이드바 -->
+<div class="mobile-sidebar" id="mobileSidebar">
+  <div class="sidebar-header">
+    <a href="/" style="color: inherit; text-decoration: none; font-weight: bold;">터마카AI</a>
+    <button class="close-sidebar" id="closeSidebar" aria-label="메뉴 닫기">×</button>
+  </div>
+  <nav class="mobile-nav">
+    <a href="/" class="nav-link">홈</a>
+    <a href="/index.html" class="nav-link">터지는 썸네일 제목</a>
+    <a href="/g/naver-home.html" class="nav-link">네이버 홈판용 제목</a>
+    <a href="/g/place-copy.html" class="nav-link">네이버 플레이스</a>
+    <a href="/g/blog-intro.html" class="nav-link">블로그 서론</a>
+    <a href="/social/instagram-caption.html" class="nav-link">인스타그램 캡션</a>
+    <a href="/social/threads-copy.html" class="nav-link">쓰레드 카피</a>
+    <div class="nav-separator"></div>
+    <a href="/g/cta.html" class="nav-link">행동 유도 카피</a>
+    <a href="/g/hso.html" class="nav-link">전환 구조 카피</a>
+    <a href="https://class.subad.kr" class="nav-link">40일만에 매출 1148만원 노하우</a>  
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+</header>
 
 <main>
   <section class="hero-section">
@@ -302,7 +342,41 @@
 </main>
 
 <!-- 푸터 placeholder -->
-<div id="footer-placeholder"></div>
+<footer class="footer">
+  <div class="footer-container">
+     <div class="footer-bottom">
+      <p>© 2025 AICOPY by SUBAD.KR · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></p>
+    </div>
+  </div>
+  <div id="floating-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px;">
+    <button id="floating-share" class="floating-btn floating-share" title="공유하고 +2회 받기" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: #FFD700; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 18px;">
+      📤
+    </button>
+    <button id="floating-book" class="floating-btn floating-book" title="마케팅 자료보고 +2회 받기" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: #FFD700; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 18px;">
+      📚
+    </button>
+  </div>
+</footer>
+
+<script>
+  // 플로팅 버튼 이벤트
+  document.addEventListener('DOMContentLoaded', function() {
+    const shareBtn = document.getElementById('floating-share');
+    const bookBtn = document.getElementById('floating-book');
+    
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function() {
+        alert('공유 기능 - 개발 중입니다!');
+      });
+    }
+    
+    if (bookBtn) {
+      bookBtn.addEventListener('click', function() {
+        alert('마케팅 자료 - 개발 중입니다!');
+      });
+    }
+  });
+  </script>
 
 <script>  
   // === 메모패드 기능 ===

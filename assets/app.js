@@ -47,18 +47,7 @@ const HEADER_HTML = `
 
 // 푸터 HTML 템플릿
 const FOOTER_HTML = `
-<footer class="footer">
-  <div class="footer-container">
-    <div class="footer-bottom">
-      <p>&copy; 2024 SUBAD.KR. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="#" class="footer-link">광고/제휴 문의</a>
-        <a href="#" class="footer-link">이용약관</a>
-        <a href="#" class="footer-link">개인정보처리방침</a>
-      </div>
-    </div>
-  </div>
-</footer>
+
 `;
 
 // 광고 HTML 템플릿
