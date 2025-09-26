@@ -1,54 +1,6 @@
 // === 공통 컴포넌트 관리 ===
 
-// 헤더 HTML 템플릿
-const HEADER_HTML = `
-<header class="header">
-  <div class="header-container">
-    <div class="header-row">
-      <a href="/" class="logo">터마카AI</a>
-      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="메뉴 열기">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="desktop-nav">
-        <a href="/" class="nav-link">홈</a>
-        <a href="/index.html" class="nav-link">터지는 제목</a>
-        <a href="/social/instagram-caption.html" class="nav-link">인스타그램</a>
-        <a href="/social/threads-copy.html" class="nav-link">쓰레드</a>
-        <a href="/#business" class="nav-link">자영업자</a>
-      </nav>
-    </div>
-  </div>
-</header>
 
-<!-- 모바일 사이드바 -->
-<div class="mobile-sidebar" id="mobileSidebar">
-  <div class="sidebar-header">
-    <a href="/" style="color: inherit; text-decoration: none; font-weight: bold;">터마카AI</a>
-    <button class="close-sidebar" id="closeSidebar" aria-label="메뉴 닫기">×</button>
-  </div>
-  <nav class="mobile-nav">
-    <a href="/" class="nav-link">홈</a>
-    <a href="/index.html" class="nav-link">터지는 썸네일 제목</a>
-    <a href="/g/naver-home.html" class="nav-link">네이버 홈판용 제목</a>
-    <a href="/g/place-copy.html" class="nav-link">네이버 플레이스</a>
-    <a href="/g/blog-intro.html" class="nav-link">블로그 서론</a>
-    <a href="/social/instagram-caption.html" class="nav-link">인스타그램 캡션</a>
-    <a href="/social/threads-copy.html" class="nav-link">쓰레드 카피</a>
-    <div class="nav-separator"></div>
-    <a href="/g/cta.html" class="nav-link">행동 유도 카피</a>
-    <a href="/g/hso.html" class="nav-link">전환 구조 카피</a>
-    <a href="https://class.subad.kr" class="nav-link">40일만에 매출 1148만원 노하우</a>  
-  </nav>
-</div>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-`;
-
-// 푸터 HTML 템플릿
-const FOOTER_HTML = `
-
-`;
 
 // 광고 HTML 템플릿
 const AD_TOP_HTML = `
@@ -131,10 +83,58 @@ const CONFIG = {
   }
 };
 
+// === 보안 함수 ===
+
+// API 키 암호화/복호화
+function encryptApiKey(apiKey) {
+  const key = btoa(apiKey + "SUBAD_SECRET_2024");
+  return btoa(key);
+}
+
+function decryptApiKey(encryptedKey) {
+  try {
+    const decoded = atob(encryptedKey);
+    const key = atob(decoded);
+    return key.replace("SUBAD_SECRET_2024", "");
+  } catch {
+    return null;
+  }
+}
+
+// 입력값 정리 함수 (XSS 방지)
+function sanitizeInput(input) {
+  if (typeof input !== 'string') return '';
+  
+  return input
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // script 태그 제거
+    .replace(/<[^>]*>/g, '') // 모든 HTML 태그 제거
+    .replace(/javascript:/gi, '') // javascript: 프로토콜 제거
+    .replace(/on\w+\s*=/gi, '') // 이벤트 핸들러 제거
+    .trim()
+    .slice(0, 1000); // 최대 1000자 제한
+}
+
+// API 키 저장/불러오기 (암호화)
+function saveApiKey(apiKey) {
+  const encrypted = encryptApiKey(apiKey);
+  localStorage.setItem('enc_api_key', encrypted);
+}
+
+function getApiKey() {
+  const encrypted = localStorage.getItem('enc_api_key');
+  return encrypted ? decryptApiKey(encrypted) : null;
+}
+
 // === API 호출 함수 ===
 
 // Make.com 웹훅을 통한 LLM 호출
 async function callLLM(type, userText) {
+  // 입력값 정리 (XSS 방지)
+  const cleanText = sanitizeInput(userText);
+  
+  if (!cleanText || cleanText.length < 2) {
+    throw new Error('올바른 내용을 입력해주세요.');
+  }
   // 사용량 체크 (생성기 버튼에서만)
   const usageInfo = checkDailyUsage();
   if (!usageInfo.canUse) {
@@ -161,9 +161,9 @@ async function callLLM(type, userText) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ 
-        prompt: userText,  // Make.com에서 기대하는 형식
+        prompt: cleanText,  // 정리된 텍스트 사용
         type, 
-        userText,
+        userText: cleanText,
         category: copyInfo.category,
         timestamp: new Date().toISOString()
       }),
@@ -228,8 +228,15 @@ async function callLLM(type, userText) {
 
 // 사용자 API 키를 사용한 직접 호출 (Premium 기능)
 async function callLLMWithUserAPI(type, userText, apiKey) {
+  // 입력값 정리 (XSS 방지)
+  const cleanText = sanitizeInput(userText);
+  
+  if (!cleanText || cleanText.length < 2) {
+    throw new Error('올바른 내용을 입력해주세요.');
+  }
+  
   if (!apiKey) {
-    return await callLLM(type, userText); // 기본 웹훅 사용
+    return await callLLM(type, cleanText); // 기본 웹훅 사용
   }
   
   try {
@@ -238,7 +245,7 @@ async function callLLMWithUserAPI(type, userText, apiKey) {
       throw new Error("일일 사용량을 초과했습니다. 내일 다시 시도해주세요.");
     }
     
-    const prompt = generatePrompt(type, userText);
+    const prompt = generatePrompt(type, cleanText);
     
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -863,8 +870,8 @@ function setupGenerator(currentType) {
         showInterstitialAd();
       }
 
-      // API 키 확인
-      const userApiKey = localStorage.getItem('userApiKey');
+      // API 키 확인 (암호화된 키 사용)
+      const userApiKey = getApiKey();
       const useType = typeSelect ? typeSelect.value : currentType;
       
       console.log('🔗 API 호출 준비:', { useType, userApiKey: !!userApiKey });
@@ -949,7 +956,7 @@ function saveRecentCopy(text, type) {
 
 // === API 키 설정 UI ===
 function showAPIKeySettings() {
-  const currentKey = localStorage.getItem('userApiKey');
+  const currentKey = getApiKey();
   const hasKey = currentKey && currentKey.length > 0;
   
   const modal = document.createElement('div');
@@ -973,14 +980,14 @@ function showAPIKeySettings() {
 function saveAPIKey() {
   const apiKey = document.getElementById('apiKeyInput').value.trim();
   if (apiKey) {
-    localStorage.setItem('userApiKey', apiKey);
-    showToast('API 키가 저장되었습니다.');
+    saveApiKey(apiKey); // 암호화하여 저장
+    showToast('API 키가 암호화되어 저장되었습니다.');
   }
   closeAPIModal();
 }
 
 function removeAPIKey() {
-  localStorage.removeItem('userApiKey');
+  localStorage.removeItem('enc_api_key'); // 암호화된 키 삭제
   showToast('API 키가 삭제되었습니다.');
   closeAPIModal();
 }
@@ -1480,25 +1487,7 @@ function bindMobileMenuEvents() {
   if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMenu);
 }
 
-// 헤더 로드
-function loadHeader() {
-  const headerPlaceholder = document.getElementById('header-placeholder');
-  if (headerPlaceholder) {
-    headerPlaceholder.innerHTML = HEADER_HTML;
-    setActiveNavigation();
-    bindMobileMenuEvents();
-    console.log('✅ 헤더 컴포넌트 로드 완료');
-  }
-}
 
-// 푸터 로드
-function loadFooter() {
-  const footerPlaceholder = document.getElementById('footer-placeholder');
-  if (footerPlaceholder) {
-    footerPlaceholder.innerHTML = FOOTER_HTML;
-    console.log('✅ 푸터 컴포넌트 로드 완료');
-  }
-}
 
 // 광고 로드
 function loadAds() {

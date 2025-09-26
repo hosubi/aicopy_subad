@@ -359,6 +359,33 @@
 </footer>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 모바일 메뉴 이벤트 바인딩
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const mobileSidebar = document.getElementById('mobileSidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const closeSidebar = document.getElementById('closeSidebar');
+
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileSidebar.classList.add('active');
+      sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  function closeMenu() {
+    if (mobileSidebar) mobileSidebar.classList.remove('active');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (closeSidebar) closeSidebar.addEventListener('click', closeMenu);
+  if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMenu);
+});
+</script>
+
+<script>
   // 플로팅 버튼 이벤트
   document.addEventListener('DOMContentLoaded', function() {
     const shareBtn = document.getElementById('floating-share');
