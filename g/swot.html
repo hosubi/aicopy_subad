@@ -399,5 +399,24 @@ function downloadMemo() {
 }
 </script>
 
-<script>setupGenerator("swot");</script>
+<script>
+// 안전한 setupGenerator 호출
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 swot.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: swot');
+      setupGenerator("swot");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("swot");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
+</script>
 </body></html>

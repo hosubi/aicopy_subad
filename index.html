@@ -465,8 +465,24 @@ function downloadMemo() {
 
 
 
-// 기본 생성기 설정
-setupGenerator("title-banger");
+// 기본 생성기 설정 - 안전한 방식
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 index.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: title-banger');
+      setupGenerator("title-banger");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("title-banger");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
 </script>
 
 </body></html>

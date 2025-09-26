@@ -190,8 +190,24 @@ function closeMenu() {
 closeSidebar.addEventListener('click', closeMenu);
 sidebarOverlay.addEventListener('click', closeMenu);
 
-// 유튜브 쇼츠 제목 생성기 설정
-setupGenerator("youtube-shorts");
+// 유튜브 쇼츠 제목 생성기 설정 - 안전한 방식
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 youtube-shorts.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: youtube-shorts');
+      setupGenerator("youtube-shorts");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("youtube-shorts");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
 </script>
 
 </body></html>

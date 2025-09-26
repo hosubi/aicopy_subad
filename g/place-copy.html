@@ -391,5 +391,24 @@
   }
   </script>
 
-<script>setupGenerator("place-copy");</script>
+<script>
+// 안전한 setupGenerator 호출
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 place-copy.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: place-copy');
+      setupGenerator("place-copy");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("place-copy");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
+</script>
 </body></html>

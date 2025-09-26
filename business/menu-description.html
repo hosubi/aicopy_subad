@@ -297,8 +297,24 @@ function closeMenu() {
 closeSidebar.addEventListener('click', closeMenu);
 sidebarOverlay.addEventListener('click', closeMenu);
 
-// 메뉴 설명 생성기 설정
-setupGenerator("menu-description");
+// 메뉴 설명 생성기 설정 - 안전한 방식
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 menu-description.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: menu-description');
+      setupGenerator("menu-description");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("menu-description");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
 </script>
 
 </body></html>

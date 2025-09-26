@@ -374,5 +374,24 @@
   }
   </script>
 
-<script>setupGenerator("hso");</script>
+<script>
+// 안전한 setupGenerator 호출
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 hso.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: hso');
+      setupGenerator("hso");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("hso");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
+</script>
 </body></html>

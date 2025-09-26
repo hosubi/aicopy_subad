@@ -245,8 +245,24 @@ function closeMenu() {
 closeSidebar.addEventListener('click', closeMenu);
 sidebarOverlay.addEventListener('click', closeMenu);
 
-// 리뷰 답변 생성기 설정
-setupGenerator("review-response");
+// 리뷰 답변 생성기 설정 - 안전한 방식
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 review-response.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: review-response');
+      setupGenerator("review-response");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("review-response");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
 </script>
 
 </body></html>

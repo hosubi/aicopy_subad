@@ -305,8 +305,24 @@ function closeMenu() {
 closeSidebar.addEventListener('click', closeMenu);
 sidebarOverlay.addEventListener('click', closeMenu);
 
-// 이벤트 홍보 생성기 설정
-setupGenerator("event-promotion");
+// 이벤트 홍보 생성기 설정 - 안전한 방식
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 event-promotion.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: event-promotion');
+      setupGenerator("event-promotion");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("event-promotion");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
 </script>
 
 </body></html>

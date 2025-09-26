@@ -394,5 +394,24 @@
   }
   </script>
 
-<script>setupGenerator("naver-home");</script>
+<script>
+// 안전한 setupGenerator 호출
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 naver-home.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: naver-home');
+      setupGenerator("naver-home");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("naver-home");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
+</script>
 </body></html>

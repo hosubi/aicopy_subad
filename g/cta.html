@@ -373,5 +373,24 @@ function downloadMemo() {
 }
 </script>
 
-<script>setupGenerator("cta");</script>
+<script>
+// 안전한 setupGenerator 호출
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 cta.html DOMContentLoaded');
+  
+  setTimeout(() => {
+    if (typeof setupGenerator === 'function') {
+      console.log('✅ setupGenerator 실행: cta');
+      setupGenerator("cta");
+    } else {
+      console.log('❌ setupGenerator 함수 없음 - 재시도');
+      setTimeout(() => {
+        if (typeof setupGenerator === 'function') {
+          setupGenerator("cta");
+        }
+      }, 1000);
+    }
+  }, 100);
+});
+</script>
 </body></html>
