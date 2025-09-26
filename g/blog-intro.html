@@ -273,7 +273,6 @@
     <a href="https://class.subad.kr/product/n-%eb%b8%94%eb%a1%9c%ea%b7%b8-%ec%b5%9c%ec%a0%81%ed%99%94-%eb%b9%a0%eb%a5%b8%eb%b9%84%eb%b2%95-pdf-gpt-%ed%94%84%eb%a1%ac%ed%94%84%ed%8a%b8/" class="promo-link small">블로그 최적화 노하우</a>
   </section>
 
-  <!-- 하단 광고 -->
   <!-- 하단 광고 placeholder -->
   <div id="ad-bottom-placeholder"></div>
 </main>
@@ -281,26 +280,29 @@
 <!-- 푸터 placeholder -->
 <div id="footer-placeholder"></div>
 
-<script>  
-  // === 메모패드 기능 ===
+<!-- === 메모패드 기능 === -->
+
+<!-- 페이지별 메모 자동 저장 -->
+<script>
+const currentPage = window.location.pathname.split('/').pop() || 'blog-intro.html';
+const memoKey = `memo_${currentPage}`;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const memoArea = document.getElementById('memo-area');
+  const charCountEl = document.getElementById('char-count');
   
-  // 페이지별 메모 자동 저장
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const memoKey = `memo_${currentPage}`;
-  const usageKey = 'ai_usage_count';
-  
-  // 메모 초기화 및 자동 저장
-  document.addEventListener('DOMContentLoaded', function() {
-    const memoArea = document.getElementById('memoArea');
+  // 저장된 메모 불러오기
+  if (memoArea) {
     const savedMemo = localStorage.getItem(memoKey);
-    
-    if (memoArea && savedMemo) {
+    if (savedMemo) {
       memoArea.value = savedMemo;
       updateCharCount();
     }
     
     // 사용 횟수 초기화
-    initializeUsageCount();
+    if (!localStorage.getItem('generateCount')) {
+      localStorage.setItem('generateCount', '0');
+    }
     
     // 자동 저장 (타이핑 후 1초)
     let saveTimeout;
@@ -309,68 +311,71 @@
         updateCharCount();
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
-          localStorage.setItem(memoKey, memoArea.value);
-          showToast('자동 저장됨', 1000);
+          localStorage.setItem(memoKey, this.value);
         }, 1000);
       });
     }
-  });
+  }
   
-  // 글자수 업데이트
   function updateCharCount() {
-    const memoArea = document.getElementById('memoArea');
-    const charCount = document.getElementById('charCount');
-    if (memoArea && charCount) {
-      const text = memoArea.value;
-      const charNoSpace = text.replace(/\s/g, '').length;
-      const charWithSpace = text.length;
-      charCount.textContent = `글자수: ${charNoSpace}자 (공백 포함: ${charWithSpace}자)`;
+    if (memoArea && charCountEl) {
+      const count = memoArea.value.length;
+      charCountEl.textContent = `${count}/1000자`;
+      
+      if (count > 900) {
+        charCountEl.style.color = '#dc3545';
+      } else if (count > 700) {
+        charCountEl.style.color = '#fd7e14';
+      } else {
+        charCountEl.style.color = '#6c757d';
+      }
     }
   }
   
-  // 메모 복사
-  function copyMemo() {
-    const memoArea = document.getElementById('memoArea');
-    if (!memoArea.value.trim()) {
-      showToast('복사할 내용이 없습니다.');
-      return;
-    }
-    
-    navigator.clipboard.writeText(memoArea.value)
-      .then(() => showToast('메모가 복사되었습니다!'))
-      .catch(() => showToast('복사 실패. 다시 시도해주세요.'));
+  // 전역 함수로 등록
+  window.updateCharCount = updateCharCount;
+});
+
+// 메모 다운로드
+function downloadMemo() {
+  const memoArea = document.getElementById('memo-area');
+  if (!memoArea || !memoArea.value.trim()) {
+    alert('다운로드할 메모가 없습니다.');
+    return;
   }
   
-  // 메모 지우기
-  function clearMemo() {
-    if (confirm('메모를 모두 지우시겠습니까?')) {
-      const memoArea = document.getElementById('memoArea');
+  const blob = new Blob([memoArea.value], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `memo_${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  if (typeof showToast === 'function') {
+    showToast('메모가 다운로드되었습니다!');
+  }
+}
+
+// 메모 초기화
+function clearMemo() {
+  if (confirm('메모를 모두 삭제하시겠습니까?')) {
+    const memoArea = document.getElementById('memo-area');
+    if (memoArea) {
       memoArea.value = '';
       localStorage.removeItem(memoKey);
       updateCharCount();
-      showToast('메모가 삭제되었습니다.');
+    }
+    if (typeof showToast === 'function') {
+      showToast('메모가 초기화되었습니다.');
     }
   }
-  
-  // 메모 다운로드
-  function downloadMemo() {
-    const memoArea = document.getElementById('memoArea');
-    if (!memoArea.value.trim()) {
-      showToast('다운로드할 내용이 없습니다.');
-      return;
-    }
-    
-    const blob = new Blob([memoArea.value], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `AI카피_메모_${new Date().toLocaleDateString('ko-KR')}.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    showToast('메모가 다운로드되었습니다!');
-  }
-  </script>
+}
+</script>
 
+<!-- 생성기 설정 -->
 <script>
 // 안전한 setupGenerator 호출
 document.addEventListener('DOMContentLoaded', function() {
@@ -391,4 +396,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 100);
 });
 </script>
+
 </body></html>
