@@ -1,0 +1,350 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- SEO 메타 태그 (404 페이지용) -->
+<title>페이지를 찾을 수 없습니다 - AICOPY</title>
+<meta name="description" content="요청하신 페이지를 찾을 수 없습니다. AICOPY의 다른 AI 카피라이팅 도구들을 이용해보세요.">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Open Graph -->
+<meta property="og:title" content="페이지를 찾을 수 없습니다 - AICOPY">
+<meta property="og:description" content="요청하신 페이지를 찾을 수 없습니다. AICOPY의 다른 AI 카피라이팅 도구들을 이용해보세요.">
+<meta property="og:image" content="https://aicopy.subad.kr/og-main.png">
+<meta property="og:url" content="https://aicopy.subad.kr/404.html">
+<meta property="og:type" content="website">
+
+<!-- 스타일시트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://pagead2.googlesyndication.com"/>
+<link rel="preconnect" href="https://googleads.g.doubleclick.net"/>
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/app.js"></script>
+
+<style>
+/* 404 페이지 전용 스타일 */
+.error-container {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.error-code {
+  font-size: 8rem;
+  font-weight: 700;
+  color: var(--primary-yellow-dark);
+  line-height: 1;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.error-description {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.error-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.error-btn-primary {
+  background: var(--primary-yellow-dark);
+  color: white;
+}
+
+.error-btn-primary:hover {
+  background: var(--primary-yellow);
+  transform: translateY(-2px);
+}
+
+.error-btn-secondary {
+  background: var(--bg-light);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+}
+
+.error-btn-secondary:hover {
+  background: var(--bg-white);
+  border-color: var(--primary-yellow-dark);
+  transform: translateY(-2px);
+}
+
+.popular-tools {
+  max-width: 800px;
+  width: 100%;
+}
+
+.popular-tools h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.tool-card {
+  display: block;
+  padding: 20px;
+  background: var(--bg-white);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.tool-card:hover {
+  border-color: var(--primary-yellow-dark);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.tool-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.tool-name {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.tool-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .error-code {
+    font-size: 6rem;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .error-btn {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- 헤더 placeholder -->
+<div id="header-placeholder"></div>
+
+<main>
+  <div class="error-container">
+    <!-- 404 에러 코드 -->
+    <div class="error-code">404</div>
+    
+    <!-- 에러 메시지 -->
+    <h1 class="error-title">🔍 페이지를 찾을 수 없습니다</h1>
+    <p class="error-description">
+      요청하신 페이지가 존재하지 않거나 이동되었습니다.<br>
+      아래 링크를 통해 원하시는 AI 카피라이팅 도구를 찾아보세요.
+    </p>
+    
+    <!-- 액션 버튼들 -->
+    <div class="error-actions">
+      <a href="/" class="error-btn error-btn-primary">
+        🏠 홈으로 돌아가기
+      </a>
+      <a href="javascript:history.back()" class="error-btn error-btn-secondary">
+        ← 이전 페이지로
+      </a>
+    </div>
+    
+    <!-- 인기 도구들 -->
+    <div class="popular-tools">
+      <h3>🚀 인기 AI 카피라이팅 도구</h3>
+      <div class="tools-grid">
+        <a href="/index.html" class="tool-card">
+          <span class="tool-icon">⚡</span>
+          <div class="tool-name">터지는 썸네일 제목</div>
+          <div class="tool-desc">CTR 상승을 위한 매력적인 제목 생성</div>
+        </a>
+        
+        <a href="/social/instagram-caption.html" class="tool-card">
+          <span class="tool-icon">📸</span>
+          <div class="tool-name">인스타그램 캡션</div>
+          <div class="tool-desc">좋아요 폭발시키는 감성 캡션</div>
+        </a>
+        
+        <a href="/g/naver-home.html" class="tool-card">
+          <span class="tool-icon">🔍</span>
+          <div class="tool-name">네이버 홈판용 제목</div>
+          <div class="tool-desc">네이버 검색 1위를 위한 제목</div>
+        </a>
+        
+        <a href="/g/place-copy.html" class="tool-card">
+          <span class="tool-icon">📍</span>
+          <div class="tool-name">플레이스 소개글</div>
+          <div class="tool-desc">방문객 2배 늘리는 매장 소개</div>
+        </a>
+        
+        <a href="/g/blog-intro.html" class="tool-card">
+          <span class="tool-icon">📝</span>
+          <div class="tool-name">블로그서론(체류↑)</div>
+          <div class="tool-desc">마지막까지 읽게 만드는 서론</div>
+        </a>
+        
+        <a href="/social/threads-copy.html" class="tool-card">
+          <span class="tool-icon">🧵</span>
+          <div class="tool-name">쓰레드 카피</div>
+          <div class="tool-desc">바이럴 되는 쓰레드 콘텐츠</div>
+        </a>
+        
+        <a href="/g/cta.html" class="tool-card">
+          <span class="tool-icon">🎯</span>
+          <div class="tool-name">행동 유도 카피</div>
+          <div class="tool-desc">전환율 높이는 CTA 문구</div>
+        </a>
+        
+        <a href="/g/swot.html" class="tool-card">
+          <span class="tool-icon">💎</span>
+          <div class="tool-name">USP 차별화글</div>
+          <div class="tool-desc">경쟁사와 차별화되는 포지셔닝</div>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 도움말 섹션 -->
+  <section class="section" style="background: var(--bg-light); margin-top: 0;">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+      <h2 class="section-title">💡 이런 경우에 404 오류가 발생할 수 있어요</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 32px;">
+        <div style="padding: 24px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-size: 2rem; margin-bottom: 12px;">🔗</div>
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;">잘못된 URL</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">주소를 직접 입력하셨다면 철자를 확인해주세요</p>
+        </div>
+        
+        <div style="padding: 24px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-size: 2rem; margin-bottom: 12px;">📱</div>
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;">이동된 페이지</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">페이지가 새로운 주소로 이동했을 수 있어요</p>
+        </div>
+        
+        <div style="padding: 24px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-size: 2rem; margin-bottom: 12px;">🔄</div>
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;">임시 오류</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">잠시 후 다시 시도하거나 새로고침해주세요</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 푸터 placeholder -->
+<div id="footer-placeholder"></div>
+
+<script>
+// 404 페이지 전용 JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  // 현재 URL을 콘솔에 로그 (디버깅용)
+  console.log('404 페이지 접근:', window.location.href);
+  
+  // Google Analytics에 404 이벤트 전송 (있는 경우)
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'page_view', {
+      page_title: '404 - Page Not Found',
+      page_location: window.location.href
+    });
+  }
+  
+  // 추천 페이지로 자동 리다이렉트 (옵션)
+  // 10초 후 홈페이지로 자동 이동을 원할 경우 주석 해제
+  /*
+  setTimeout(() => {
+    if (confirm('10초가 지났습니다. 홈페이지로 이동하시겠습니까?')) {
+      window.location.href = '/';
+    }
+  }, 10000);
+  */
+});
+
+// 검색 기능 (향후 추가 가능)
+function searchSite() {
+  const query = prompt('찾고 있는 도구를 입력해주세요:');
+  if (query) {
+    // 간단한 키워드 매칭
+    const keywords = {
+      '썸네일': '/index.html',
+      '제목': '/index.html',
+      '인스타': '/social/instagram-caption.html',
+      '캡션': '/social/instagram-caption.html',
+      '네이버': '/g/naver-home.html',
+      '플레이스': '/g/place-copy.html',
+      '블로그': '/g/blog-intro.html',
+      '쓰레드': '/social/threads-copy.html',
+      'cta': '/g/cta.html',
+      '행동': '/g/cta.html',
+      'usp': '/g/swot.html',
+      '차별화': '/g/swot.html'
+    };
+    
+    const lowerQuery = query.toLowerCase();
+    for (const [keyword, url] of Object.entries(keywords)) {
+      if (lowerQuery.includes(keyword)) {
+        window.location.href = url;
+        return;
+      }
+    }
+    
+    // 매칭되는 키워드가 없으면 홈으로
+    alert('해당 도구를 찾을 수 없어 홈페이지로 이동합니다.');
+    window.location.href = '/';
+  }
+}
+</script>
+
+</body></html>

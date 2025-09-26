@@ -1,3 +1,97 @@
+// === 공통 컴포넌트 관리 ===
+
+// 헤더 HTML 템플릿
+const HEADER_HTML = `
+<header class="header">
+  <div class="header-container">
+    <div class="header-row">
+      <a href="/" class="logo">터마카AI</a>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="desktop-nav">
+        <a href="/" class="nav-link">홈</a>
+        <a href="/index.html" class="nav-link">터지는 제목</a>
+        <a href="/social/instagram-caption.html" class="nav-link">인스타그램</a>
+        <a href="/social/threads-copy.html" class="nav-link">쓰레드</a>
+        <a href="/#business" class="nav-link">자영업자</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- 모바일 사이드바 -->
+<div class="mobile-sidebar" id="mobileSidebar">
+  <div class="sidebar-header">
+    <a href="/" style="color: inherit; text-decoration: none; font-weight: bold;">터마카AI</a>
+    <button class="close-sidebar" id="closeSidebar" aria-label="메뉴 닫기">×</button>
+  </div>
+  <nav class="mobile-nav">
+    <a href="/" class="nav-link">홈</a>
+    <a href="/index.html" class="nav-link">터지는 썸네일 제목</a>
+    <a href="/g/naver-home.html" class="nav-link">네이버 홈판용 제목</a>
+    <a href="/g/place-copy.html" class="nav-link">네이버 플레이스</a>
+    <a href="/g/blog-intro.html" class="nav-link">블로그 서론</a>
+    <a href="/social/instagram-caption.html" class="nav-link">인스타그램 캡션</a>
+    <a href="/social/threads-copy.html" class="nav-link">쓰레드 카피</a>
+    <div class="nav-separator"></div>
+    <a href="/g/cta.html" class="nav-link">행동 유도 카피</a>
+    <a href="/g/hso.html" class="nav-link">전환 구조 카피</a>
+    <a href="https://class.subad.kr" class="nav-link">40일만에 매출 1148만원 노하우</a>  
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+`;
+
+// 푸터 HTML 템플릿
+const FOOTER_HTML = `
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-bottom">
+      <p>&copy; 2024 SUBAD.KR. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">광고/제휴 문의</a>
+        <a href="#" class="footer-link">이용약관</a>
+        <a href="#" class="footer-link">개인정보처리방침</a>
+      </div>
+    </div>
+  </div>
+</footer>
+`;
+
+// 광고 HTML 템플릿
+const AD_TOP_HTML = `
+<div class="ad-wrap">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+  crossorigin="anonymous"></script>
+<!-- COPY SUBAD -->
+<ins class="adsbygoogle"
+  style="display:inline-block;width:300px;height:200px"
+  data-ad-client="ca-pub-2658372907170284"
+  data-ad-slot="8145443979"></ins>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+`;
+
+const AD_BOTTOM_HTML = `
+<div class="ad-wrap">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
+  crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+  style="display:block"
+  data-ad-format="autorelaxed"
+  data-ad-client="ca-pub-2658372907170284"
+  data-ad-slot="7949523922"></ins>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+`;
+
 // === App Configuration ===
 const CONFIG = {
   // Make.com 웹훅 설정 (페이지별로 다른 웹훅 사용)
@@ -52,6 +146,14 @@ const CONFIG = {
 
 // Make.com 웹훅을 통한 LLM 호출
 async function callLLM(type, userText) {
+  // 사용량 체크 (생성기 버튼에서만)
+  const usageInfo = checkDailyUsage();
+  if (!usageInfo.canUse) {
+    // 5회 초과시 팝업 표시
+    showUsageLimitPopup();
+    throw new Error(`오늘 사용량을 모두 사용했습니다. (${usageInfo.used}/${usageInfo.totalLimit}회)`);
+  }
+  
   const copyInfo = CONFIG.COPY_TYPES[type] || { category: "general" };
   const webhookUrl = CONFIG.WEBHOOKS[type] || CONFIG.WEBHOOKS.default;
   
@@ -118,6 +220,9 @@ async function callLLM(type, userText) {
     if (!finalResult || finalResult === '') {
       throw new Error('빈 응답을 받았습니다.');
     }
+    
+    // 성공시 사용량 증가
+    incrementDailyUsage();
     
     return finalResult;
     
@@ -224,6 +329,342 @@ function trackAPIUsage(apiKey) {
   
   usage[today][apiKey]++;
   localStorage.setItem('apiUsage', JSON.stringify(usage));
+}
+
+// === 일일 사용량 관리 (5회 제한) ===
+function checkDailyUsage() {
+  const today = new Date().toDateString();
+  const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
+  
+  if (!usageData[today]) {
+    usageData[today] = {
+      used: 0,
+      shareBonus: 0,
+      bookBonus: 0
+    };
+    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+  }
+  
+  const dayData = usageData[today];
+  const baseLimit = 5;
+  const bonusLimit = dayData.shareBonus + dayData.bookBonus;
+  const totalLimit = baseLimit + bonusLimit;
+  
+  return {
+    canUse: dayData.used < totalLimit,
+    used: dayData.used,
+    remaining: Math.max(0, totalLimit - dayData.used),
+    totalLimit: totalLimit,
+    shareBonus: dayData.shareBonus,
+    bookBonus: dayData.bookBonus
+  };
+}
+
+// 사용량 증가 (생성기 버튼에서만 호출)
+function incrementDailyUsage() {
+  const today = new Date().toDateString();
+  const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
+  
+  if (!usageData[today]) {
+    usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
+  }
+  
+  usageData[today].used++;
+  localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+  
+  console.log(`📊 사용량: ${usageData[today].used}회`);
+  
+  // 5회 사용시 팝업 표시
+  if (usageData[today].used === 5 && (usageData[today].shareBonus + usageData[today].bookBonus) === 0) {
+    setTimeout(() => showUsageLimitPopup(), 1000);
+  }
+}
+
+// 공유 보너스 적용
+function applyShareBonus() {
+  const today = new Date().toDateString();
+  const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
+  
+  if (!usageData[today]) {
+    usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
+  }
+  
+  if (usageData[today].shareBonus === 0) {
+    usageData[today].shareBonus += 2;
+    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+    
+    showToast('🎉 공유 완료! +2회 추가되었습니다!', 3000);
+    updateFloatingButtons();
+    return true;
+  } else {
+    showToast('이미 공유 보너스를 받으셨습니다!', 2000);
+    return false;
+  }
+}
+
+// 책 보너스 적용
+function applyBookBonus() {
+  const today = new Date().toDateString();
+  const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
+  
+  if (!usageData[today]) {
+    usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
+  }
+  
+  if (usageData[today].bookBonus === 0) {
+    usageData[today].bookBonus += 2;
+    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+    
+    showToast('📚 책 확인 완료! +2회 추가되었습니다!', 3000);
+    updateFloatingButtons();
+    return true;
+  } else {
+    showToast('이미 책 보너스를 받으셨습니다!', 2000);
+    return false;
+  }
+}
+
+// 5회 사용 제한 팝업
+function showUsageLimitPopup() {
+  // 기존 팝업이 있으면 제거
+  const existingPopup = document.querySelector('.usage-popup-overlay');
+  if (existingPopup) existingPopup.remove();
+  
+  const popup = document.createElement('div');
+  popup.className = 'usage-popup-overlay';
+  popup.innerHTML = `
+    <div class="usage-popup">
+      <div class="popup-icon">⚠️</div>
+      <h3>일일 사용량을 다 사용하셨습니다</h3>
+      <p>도움이 되셨다면,<br><strong>공유하고 2회 더 사용하세요!</strong></p>
+      <p class="popup-hint">오른쪽 아래 <strong>책버튼</strong>을 확인하시면 2회 더!</p>
+      
+      <div class="popup-buttons">
+        <button class="popup-btn popup-btn-share" onclick="handleFloatingShare()">
+          📤 공유하고 +2회
+        </button>
+        <button class="popup-btn popup-btn-book" onclick="handleFloatingBook()">
+          📚 책보고 +2회  
+        </button>
+        <button class="popup-btn popup-btn-close" onclick="closeUsagePopup()">
+          나중에
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(popup);
+}
+
+function closeUsagePopup() {
+  const popup = document.querySelector('.usage-popup-overlay');
+  if (popup) popup.remove();
+}
+
+// 플로팅 버튼 생성
+function createFloatingButtons() {
+  const existing = document.getElementById('floating-container');
+  if (existing) existing.remove();
+  
+  const floatingContainer = document.createElement('div');
+  floatingContainer.id = 'floating-container';
+  floatingContainer.innerHTML = `
+    <div class="floating-buttons">
+      <button id="floating-share" class="floating-btn floating-share" title="공유하고 +2회 받기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+        </svg>
+      </button>
+      
+      <button id="floating-book" class="floating-btn floating-book" title="마케팅 자료보고 +2회 받기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+        </svg>
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(floatingContainer);
+  
+  // 이벤트 바인딩
+  const shareBtn = document.getElementById('floating-share');
+  const bookBtn = document.getElementById('floating-book');
+  
+  if (shareBtn) shareBtn.addEventListener('click', handleFloatingShare);
+  if (bookBtn) bookBtn.addEventListener('click', handleFloatingBook);
+  
+  updateFloatingButtons();
+}
+
+// 플로팅 버튼 클릭 처리
+function handleFloatingShare() {
+  showShareModal();
+}
+
+function handleFloatingBook() {
+  showBookModal();
+}
+
+// 공유 모달 표시
+function showShareModal() {
+  const existing = document.querySelector('.share-modal-overlay');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.className = 'share-modal-overlay';
+  modal.innerHTML = `
+    <div class="share-modal">
+      <div class="modal-header">
+        <h3>🎁 공유하고 무한 사용!</h3>
+        <button class="modal-close" onclick="closeShareModal()">×</button>
+      </div>
+      
+      <div class="modal-content">
+        <p>현재 페이지 주소가 클립보드에 복사되었습니다!</p>
+        <p>친구들과 공유하면 <strong>무한 사용</strong>이 가능합니다.</p>
+        
+        <div class="url-container">
+          <input type="text" class="url-input" id="shareUrlInput" value="${window.location.href}" readonly>
+        </div>
+        
+        <button class="complete-btn" onclick="completeShare()">
+          ✅ 공유 완료
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // 자동으로 클립보드에 복사
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    showToast('📋 주소가 클립보드에 복사되었습니다!', 2000);
+  }).catch(() => {
+    const input = document.getElementById('shareUrlInput');
+    input.select();
+    document.execCommand('copy');
+    showToast('📋 주소가 클립보드에 복사되었습니다!', 2000);
+  });
+}
+
+// 책 모달 표시
+function showBookModal() {
+  const existing = document.querySelector('.book-modal-overlay');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.className = 'book-modal-overlay';
+  modal.innerHTML = `
+    <div class="book-modal">
+      <div class="modal-header">
+        <h3>📚 마케팅 자료 추천</h3>
+        <button class="modal-close" onclick="closeBookModal()">×</button>
+      </div>
+      
+      <div class="modal-content">
+        <p style="margin-bottom: 16px; color: #666; font-size: 0.9rem;">
+          마케팅책 구매시 파트너스 수수료를 받습니다.<br>
+          더좋은 서비스로 마케팅공부는 개발자에게 도움됩니다!
+        </p>
+        
+        <div style="margin: 20px 0; text-align: center;">
+          <iframe src="https://ads-partners.coupang.com/widgets.html?id=848257&template=carousel&trackingCode=AF8239972&subId=&width=680&height=140&tsource=" 
+                  width="100%" 
+                  height="140" 
+                  frameborder="0" 
+                  scrolling="no" 
+                  referrerpolicy="unsafe-url" 
+                  browsingtopics
+                  style="max-width: 680px; border-radius: 8px;">
+          </iframe>
+        </div>
+        
+        <button class="complete-btn" onclick="completeBookReading()">
+          ✅ 확인 완료
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+// 모달 닫기 함수들
+function closeShareModal() {
+  const modal = document.querySelector('.share-modal-overlay');
+  if (modal) modal.remove();
+}
+
+function closeBookModal() {
+  const modal = document.querySelector('.book-modal-overlay');
+  if (modal) modal.remove();
+}
+
+// 공유 완료 처리
+function completeShare() {
+  const today = new Date().toDateString();
+  const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
+  
+  if (!usageData[today]) {
+    usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
+  }
+  
+  if (usageData[today].shareBonus < 2) {
+    usageData[today].shareBonus++;
+    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+    
+    if (usageData[today].shareBonus >= 2) {
+      // 2번 공유 완료시 무한 사용 가능
+      usageData[today].shareBonus = 999; // 무한 사용 플래그
+      localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+      showToast('🎉 무한 사용이 활성화되었습니다!', 3000);
+    } else {
+      showToast(`📤 공유 완료! (${usageData[today].shareBonus}/2)`, 2000);
+    }
+  } else {
+    showToast('이미 무한 사용이 활성화되어 있습니다!', 2000);
+  }
+  
+  closeShareModal();
+  closeUsagePopup();
+  updateFloatingButtons();
+}
+
+// 책 읽기 완료 처리
+function completeBookReading() {
+  applyBookBonus();
+  closeBookModal();
+}
+
+// 플로팅 버튼 상태 업데이트
+function updateFloatingButtons() {
+  const usageInfo = checkDailyUsage();
+  const shareBtn = document.getElementById('floating-share');
+  const bookBtn = document.getElementById('floating-book');
+  
+  if (shareBtn) {
+    if (usageInfo.shareBonus > 0) {
+      shareBtn.style.opacity = '0.5';
+      shareBtn.style.cursor = 'not-allowed';
+      shareBtn.title = '이미 공유 보너스를 받으셨습니다';
+    } else {
+      shareBtn.style.opacity = '1';
+      shareBtn.style.cursor = 'pointer';
+      shareBtn.title = '공유하고 +2회 받기';
+    }
+  }
+  
+  if (bookBtn) {
+    if (usageInfo.bookBonus > 0) {
+      bookBtn.style.opacity = '0.5';
+      bookBtn.style.cursor = 'not-allowed';
+      bookBtn.title = '이미 책 보너스를 받으셨습니다';
+    } else {
+      bookBtn.style.opacity = '1';
+      bookBtn.style.cursor = 'pointer';
+      bookBtn.title = '마케팅 자료보고 +2회 받기';
+    }
+  }
 }
 
 // === UI 관련 함수 ===
@@ -620,6 +1061,298 @@ style.textContent = `
     cursor: pointer;
     font-weight: 500;
   }
+
+  /* === 플로팅 버튼 스타일 === */
+  .floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .floating-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
+
+  .floating-share {
+    background: #FFD700;
+    color: #333;
+  }
+
+  .floating-book {
+    background: #FFD700;
+    color: #333;
+  }
+
+  .floating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+
+  /* === 사용량 제한 팝업 스타일 === */
+  .usage-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .usage-popup {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .popup-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+
+  .usage-popup h3 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 1.25rem;
+  }
+
+  .usage-popup p {
+    margin: 0 0 12px 0;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  .popup-hint {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #FF9800;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  .popup-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .popup-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .popup-btn-share {
+    background:rgb(255, 217, 0);
+    color: white;
+  }
+
+  .popup-btn-book {
+    background:rgb(255, 217, 0);
+    color: white;
+  }
+
+  .popup-btn-close {
+    background: #f5f5f5;
+    color: #666;
+  }
+
+  .popup-btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+  }
+
+  /* === 모바일 반응형 === */
+  @media (max-width: 768px) {
+    .floating-buttons {
+      bottom: 80px;
+      right: 16px;
+    }
+    
+    .floating-btn {
+      width: 45px;
+      height: 45px;
+    }
+    
+    .usage-popup {
+      padding: 24px 20px;
+      margin: 20px;
+    }
+    
+    .popup-icon {
+      font-size: 2.5rem;
+    }
+    
+    .usage-popup h3 {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* === 공유/책 모달 스타일 === */
+  .share-modal-overlay,
+  .book-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .share-modal,
+  .book-modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2rem;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+  }
+
+  .modal-close:hover {
+    background: rgba(0,0,0,0.1);
+  }
+
+  .modal-content {
+    padding: 24px;
+  }
+
+  .modal-content p {
+    margin: 0 0 16px 0;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  .url-container {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 2px solid #e9ecef;
+  }
+
+  .url-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 0.9rem;
+    color: #333;
+    text-align: center;
+    outline: none;
+  }
+
+  .complete-btn {
+    width: 100%;
+    background: #FFD700;
+    color: #333;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-bottom: 16px;
+  }
+
+  .complete-btn:hover {
+    background: #FFC107;
+    transform: translateY(-1px);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* 모바일 반응형 */
+  @media (max-width: 768px) {
+    .share-modal,
+    .book-modal {
+      margin: 20px;
+      max-height: 90vh;
+    }
+    
+    .modal-header {
+      padding: 16px;
+    }
+    
+    .modal-header h3 {
+      font-size: 1.1rem;
+    }
+    
+    .modal-content {
+      padding: 20px;
+    }
+  }
 `;
 document.head.appendChild(style);
 
@@ -714,6 +1447,107 @@ async function testAllWebhooks() {
   }
 }
 
+// === 공통 컴포넌트 로더 함수 ===
+
+// 현재 페이지 경로에 따라 active 클래스 설정
+function setActiveNavigation() {
+  const currentPath = window.location.pathname;
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    const href = link.getAttribute('href');
+    
+    if (href === currentPath || 
+        (currentPath === '/' && href === '/') ||
+        (currentPath.includes(href) && href !== '/' && href.length > 1)) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// 모바일 메뉴 이벤트 바인딩
+function bindMobileMenuEvents() {
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const mobileSidebar = document.getElementById('mobileSidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const closeSidebar = document.getElementById('closeSidebar');
+
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileSidebar.classList.add('active');
+      sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  function closeMenu() {
+    if (mobileSidebar) mobileSidebar.classList.remove('active');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (closeSidebar) closeSidebar.addEventListener('click', closeMenu);
+  if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMenu);
+}
+
+// 헤더 로드
+function loadHeader() {
+  const headerPlaceholder = document.getElementById('header-placeholder');
+  if (headerPlaceholder) {
+    headerPlaceholder.innerHTML = HEADER_HTML;
+    setActiveNavigation();
+    bindMobileMenuEvents();
+    console.log('✅ 헤더 컴포넌트 로드 완료');
+  }
+}
+
+// 푸터 로드
+function loadFooter() {
+  const footerPlaceholder = document.getElementById('footer-placeholder');
+  if (footerPlaceholder) {
+    footerPlaceholder.innerHTML = FOOTER_HTML;
+    console.log('✅ 푸터 컴포넌트 로드 완료');
+  }
+}
+
+// 광고 로드
+function loadAds() {
+  // 상단 광고
+  const topAdPlaceholder = document.getElementById('ad-top-placeholder');
+  if (topAdPlaceholder) {
+    topAdPlaceholder.innerHTML = AD_TOP_HTML;
+    console.log('✅ 상단 광고 컴포넌트 로드 완료');
+  }
+  
+  // 하단 광고
+  const bottomAdPlaceholder = document.getElementById('ad-bottom-placeholder');
+  if (bottomAdPlaceholder) {
+    bottomAdPlaceholder.innerHTML = AD_BOTTOM_HTML;
+    console.log('✅ 하단 광고 컴포넌트 로드 완료');
+  }
+}
+
+// 모든 공통 컴포넌트 로드
+function loadCommonComponents() {
+  console.log('🔧 공통 컴포넌트 로딩 시작');
+  loadHeader();
+  loadFooter();
+  loadAds();
+  console.log('🎉 모든 공통 컴포넌트 로딩 완료');
+}
+
+// DOMContentLoaded 이벤트에 공통 컴포넌트 로더 추가
+document.addEventListener('DOMContentLoaded', function() {
+  // 공통 컴포넌트 먼저 로드
+  loadCommonComponents();
+  
+  // 플로팅 버튼 생성 (약간 지연)
+  setTimeout(() => {
+    createFloatingButtons();
+  }, 500);
+});
+
 // 전역 함수 export
 window.callLLM = callLLM;
 window.callLLMWithUserAPI = callLLMWithUserAPI;
@@ -725,3 +1559,21 @@ window.clearRecentCopies = clearRecentCopies;
 window.clearAllRecentCopies = clearAllRecentCopies;
 window.testPageWebhook = testPageWebhook;
 window.testAllWebhooks = testAllWebhooks;
+window.loadCommonComponents = loadCommonComponents;
+window.loadHeader = loadHeader;
+window.loadFooter = loadFooter;
+window.loadAds = loadAds;
+window.handleFloatingShare = handleFloatingShare;
+window.handleFloatingBook = handleFloatingBook;
+window.closeUsagePopup = closeUsagePopup;
+window.checkDailyUsage = checkDailyUsage;
+window.incrementDailyUsage = incrementDailyUsage;
+window.applyShareBonus = applyShareBonus;
+window.applyBookBonus = applyBookBonus;
+window.updateFloatingButtons = updateFloatingButtons;
+window.showShareModal = showShareModal;
+window.showBookModal = showBookModal;
+window.closeShareModal = closeShareModal;
+window.closeBookModal = closeBookModal;
+window.completeShare = completeShare;
+window.completeBookReading = completeBookReading;
