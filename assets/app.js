@@ -155,17 +155,21 @@ async function callLLM(type, userText) {
       controller.abort();
     }, 30000);
     
-    const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
+    onst response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Origin": window.location.origin,           // https://aicopy.subad.kr
+        "X-Domain": window.location.hostname,       // aicopy.subad.kr  
+        "Referer": window.location.href            // 전체 URL
       },
       body: JSON.stringify({ 
-        prompt: cleanText,  // 정리된 텍스트 사용
+        prompt: cleanText,
         type, 
         userText: cleanText,
         category: copyInfo.category,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        domain: window.location.hostname           // 추가 검증용
       }),
       signal: controller.signal
     });
