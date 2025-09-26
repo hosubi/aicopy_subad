@@ -68,6 +68,70 @@
 <link rel="stylesheet" href="../assets/style.css" />
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284" crossorigin="anonymous"></script>
 <script src="../assets/app.js"></script>
+<script>
+  console.log('🚀 index.html 스크립트 시작됨');
+  
+  // app.js가 로드되었는지 확인
+  window.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 index.html DOMContentLoaded');
+    
+    // 3초 후에도 헤더가 없으면 fallback 실행
+    setTimeout(() => {
+      const headerPlaceholder = document.getElementById('header-placeholder');
+      const footerPlaceholder = document.getElementById('footer-placeholder');
+      
+      if (headerPlaceholder && !headerPlaceholder.innerHTML.trim()) {
+        console.log('❌ 헤더가 로드되지 않음 - fallback 실행');
+        
+        // Fallback 헤더
+        headerPlaceholder.innerHTML = `
+          <header class="header" style="background: #fff; padding: 1rem 0; border-bottom: 1px solid #eee;">
+            <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center;">
+              <a href="/" style="font-weight: bold; color: #333; text-decoration: none; font-size: 1.2rem;">터마카AI</a>
+              <nav style="display: flex; gap: 1rem;">
+                <a href="/" style="color: #666; text-decoration: none;">홈</a>
+                <a href="/index.html" style="color: #666; text-decoration: none;">터지는 제목</a>
+                <a href="/social/instagram-caption.html" style="color: #666; text-decoration: none;">인스타그램</a>
+                <a href="/social/threads-copy.html" style="color: #666; text-decoration: none;">쓰레드</a>
+              </nav>
+            </div>
+          </header>
+        `;
+      }
+      
+      if (footerPlaceholder && !footerPlaceholder.innerHTML.trim()) {
+        console.log('❌ 푸터가 로드되지 않음 - fallback 실행');
+        
+        // Fallback 푸터
+        footerPlaceholder.innerHTML = `
+          <footer style="background: #f8f9fa; padding: 2rem 0; margin-top: 4rem; text-align: center; border-top: 1px solid #eee;">
+            <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+              <p style="margin: 0; color: #666; font-size: 0.9rem;">&copy; 2024 SUBAD.KR. All rights reserved.</p>
+            </div>
+          </footer>
+        `;
+      }
+      
+      // 플로팅 버튼도 fallback으로 추가
+      const existingFloating = document.getElementById('floating-container');
+      if (!existingFloating) {
+        console.log('❌ 플로팅 버튼이 없음 - fallback 실행');
+        
+        const floatingHtml = `
+          <div id="floating-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px;">
+            <button onclick="alert('공유 기능 - app.js 로드 필요')" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: #FFD700; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" title="공유 버튼">
+              📤
+            </button>
+            <button onclick="alert('책 기능 - app.js 로드 필요')" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: #FFD700; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" title="책 버튼">
+              📚
+            </button>
+          </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', floatingHtml);
+      }
+    }, 3000);
+  });
+  </script>
 </head>
 
 <body>
