@@ -377,8 +377,7 @@ function showUsageLimitPopup() {
       <h3>일일 사용량을 다 사용하셨습니다</h3>
       <p>도움이 되셨다면,<br><strong>공유하고 2회 더 사용하세요!</strong></p>
       <p class="popup-hint">마케팅 책 구매로 소정의 수수료를 받을 수 있습니다.<br>마케팅 공부는 더 좋은 서비스 업그레이드에 도움이 됩니다!</p>
-      
-      <div class="popup-buttons">
+<iframe src="https://ads-partners.coupang.com/widgets.html?id=848257&template=carousel&trackingCode=AF8239972&subId=&width=680&height=140&tsource=" width="680" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>      <div class="popup-buttons">
 
 
 
@@ -396,10 +395,8 @@ function showUsageLimitPopup() {
         </button>
       </div>
 
-      <script src="https://ads-partners.coupang.com/g.js"></script>
-      <script>
-          new PartnersCoupang.G({"id":848257,"trackingCode":"AF8239972","subId":null,"template":"carousel","width":"680","height":"140"});
-      </script>
+
+
     </div>
   `;
   
@@ -448,13 +445,21 @@ function createFloatingButtons() {
 
 // 플로팅 버튼 클릭 처리
 function handleFloatingShare() {
-  // 항상 팝업을 먼저 표시
+  // 현재 페이지 URL 클립보드에 복사
+  const currentUrl = window.location.href;
+  copyToClipboard(currentUrl);
+  
+  // 팝업 표시
   showUsageLimitPopup();
   const success = applyShareBonus();
 }
 
 function handleFloatingBook() {
-  // 항상 팝업을 먼저 표시
+  // 현재 페이지 URL 클립보드에 복사
+  const currentUrl = window.location.href;
+  copyToClipboard(currentUrl);
+  
+  // 팝업 표시
   showUsageLimitPopup();
   const success = applyBookBonus();
 }
