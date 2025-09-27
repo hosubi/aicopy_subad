@@ -1,22 +1,6 @@
 // === 공통 컴포넌트 관리 ===
 
-
-
-// 광고 HTML 템플릿
-const AD_TOP_HTML = `
-<div class="ad-wrap">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2658372907170284"
-  crossorigin="anonymous"></script>
-<!-- COPY SUBAD -->
-<ins class="adsbygoogle"
-  style="display:inline-block;width:300px;height:200px"
-  data-ad-client="ca-pub-2658372907170284"
-  data-ad-slot="8145443979"></ins>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
-`;
+// 헤더 HTML 템플릿
 
 const AD_BOTTOM_HTML = `
 <div class="ad-wrap">
@@ -33,6 +17,7 @@ const AD_BOTTOM_HTML = `
 </div>
 `;
 
+// === App Configuration ===
 // === App Configuration ===
 const CONFIG = {
   // Make.com 웹훅 설정 (페이지별로 다른 웹훅 사용)
@@ -85,58 +70,10 @@ const CONFIG = {
   }
 };
 
-// === 보안 함수 ===
-
-// API 키 암호화/복호화
-function encryptApiKey(apiKey) {
-  const key = btoa(apiKey + "SUBAD_SECRET_2024");
-  return btoa(key);
-}
-
-function decryptApiKey(encryptedKey) {
-  try {
-    const decoded = atob(encryptedKey);
-    const key = atob(decoded);
-    return key.replace("SUBAD_SECRET_2024", "");
-  } catch {
-    return null;
-  }
-}
-
-// 입력값 정리 함수 (XSS 방지)
-function sanitizeInput(input) {
-  if (typeof input !== 'string') return '';
-  
-  return input
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // script 태그 제거
-    .replace(/<[^>]*>/g, '') // 모든 HTML 태그 제거
-    .replace(/javascript:/gi, '') // javascript: 프로토콜 제거
-    .replace(/on\w+\s*=/gi, '') // 이벤트 핸들러 제거
-    .trim()
-    .slice(0, 1000); // 최대 1000자 제한
-}
-
-// API 키 저장/불러오기 (암호화)
-function saveApiKey(apiKey) {
-  const encrypted = encryptApiKey(apiKey);
-  localStorage.setItem('enc_api_key', encrypted);
-}
-
-function getApiKey() {
-  const encrypted = localStorage.getItem('enc_api_key');
-  return encrypted ? decryptApiKey(encrypted) : null;
-}
-
 // === API 호출 함수 ===
 
 // Make.com 웹훅을 통한 LLM 호출
 async function callLLM(type, userText) {
-  // 입력값 정리 (XSS 방지)
-  const cleanText = sanitizeInput(userText);
-  
-  if (!cleanText || cleanText.length < 2) {
-    throw new Error('올바른 내용을 입력해주세요.');
-  }
   // 사용량 체크 (생성기 버튼에서만)
   const usageInfo = checkDailyUsage();
   if (!usageInfo.canUse) {
@@ -158,22 +95,16 @@ async function callLLM(type, userText) {
     }, 30000);
     
     const response = await fetch(webhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Origin": window.location.origin,           // https://aicopy.subad.kr
-        "X-Domain": window.location.hostname,       // aicopy.subad.kr  
-        "Referer": window.location.href,            // 전체 URL
-      
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ 
-        prompt: cleanText,
+        prompt: userText,  // Make.com에서 기대하는 형식
         type, 
-        userText: cleanText,
+        userText,
         category: copyInfo.category,
-        timestamp: new Date().toISOString(),
-        domain: window.location.hostname,  // 이 부분이 중요!
-        source: "aicopy.subad.kr"          // 추가 검증용
+        timestamp: new Date().toISOString()
       }),
       signal: controller.signal
     });
@@ -236,15 +167,8 @@ async function callLLM(type, userText) {
 
 // 사용자 API 키를 사용한 직접 호출 (Premium 기능)
 async function callLLMWithUserAPI(type, userText, apiKey) {
-  // 입력값 정리 (XSS 방지)
-  const cleanText = sanitizeInput(userText);
-  
-  if (!cleanText || cleanText.length < 2) {
-    throw new Error('올바른 내용을 입력해주세요.');
-  }
-  
   if (!apiKey) {
-    return await callLLM(type, cleanText); // 기본 웹훅 사용
+    return await callLLM(type, userText); // 기본 웹훅 사용
   }
   
   try {
@@ -253,7 +177,7 @@ async function callLLMWithUserAPI(type, userText, apiKey) {
       throw new Error("일일 사용량을 초과했습니다. 내일 다시 시도해주세요.");
     }
     
-    const prompt = generatePrompt(type, cleanText);
+    const prompt = generatePrompt(type, userText);
     
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -502,142 +426,17 @@ function createFloatingButtons() {
 
 // 플로팅 버튼 클릭 처리
 function handleFloatingShare() {
-  showShareModal();
+  const success = applyShareBonus();
+  if (success) {
+    closeUsagePopup();
+  }
 }
 
 function handleFloatingBook() {
-  showBookModal();
-}
-
-// 공유 모달 표시
-function showShareModal() {
-  const existing = document.querySelector('.share-modal-overlay');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.className = 'share-modal-overlay';
-  modal.innerHTML = `
-    <div class="share-modal">
-      <div class="modal-header">
-        <h3>🎁 공유하고 무한 사용!</h3>
-        <button class="modal-close" onclick="closeShareModal()">×</button>
-      </div>
-      
-      <div class="modal-content">
-        <p>현재 페이지 주소가 클립보드에 복사되었습니다!</p>
-        <p>친구들과 공유하면 <strong>무한 사용</strong>이 가능합니다.</p>
-        
-        <div class="url-container">
-          <input type="text" class="url-input" id="shareUrlInput" value="${window.location.href}" readonly>
-        </div>
-        
-        <button class="complete-btn" onclick="completeShare()">
-          ✅ 공유 완료
-        </button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-  
-  // 자동으로 클립보드에 복사
-  navigator.clipboard.writeText(window.location.href).then(() => {
-    showToast('📋 주소가 클립보드에 복사되었습니다!', 2000);
-  }).catch(() => {
-    const input = document.getElementById('shareUrlInput');
-    input.select();
-    document.execCommand('copy');
-    showToast('📋 주소가 클립보드에 복사되었습니다!', 2000);
-  });
-}
-
-// 책 모달 표시
-function showBookModal() {
-  const existing = document.querySelector('.book-modal-overlay');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.className = 'book-modal-overlay';
-  modal.innerHTML = `
-    <div class="book-modal">
-      <div class="modal-header">
-        <h3>📚 마케팅 자료 추천</h3>
-        <button class="modal-close" onclick="closeBookModal()">×</button>
-      </div>
-      
-      <div class="modal-content">
-        <p style="margin-bottom: 16px; color: #666; font-size: 0.9rem;">
-          마케팅책 구매시 파트너스 수수료를 받습니다.<br>
-          더좋은 서비스로 마케팅공부는 개발자에게 도움됩니다!
-        </p>
-        
-        <div style="margin: 20px 0; text-align: center;">
-          <iframe src="https://ads-partners.coupang.com/widgets.html?id=848257&template=carousel&trackingCode=AF8239972&subId=&width=680&height=140&tsource=" 
-                  width="100%" 
-                  height="140" 
-                  frameborder="0" 
-                  scrolling="no" 
-                  referrerpolicy="unsafe-url" 
-                  browsingtopics
-                  style="max-width: 680px; border-radius: 8px;">
-          </iframe>
-        </div>
-        
-        <button class="complete-btn" onclick="completeBookReading()">
-          ✅ 확인 완료
-        </button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-}
-
-// 모달 닫기 함수들
-function closeShareModal() {
-  const modal = document.querySelector('.share-modal-overlay');
-  if (modal) modal.remove();
-}
-
-function closeBookModal() {
-  const modal = document.querySelector('.book-modal-overlay');
-  if (modal) modal.remove();
-}
-
-// 공유 완료 처리
-function completeShare() {
-  const today = new Date().toDateString();
-  const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
-  
-  if (!usageData[today]) {
-    usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
+  const success = applyBookBonus();
+  if (success) {
+    closeUsagePopup();
   }
-  
-  if (usageData[today].shareBonus < 2) {
-    usageData[today].shareBonus++;
-    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
-    
-    if (usageData[today].shareBonus >= 2) {
-      // 2번 공유 완료시 무한 사용 가능
-      usageData[today].shareBonus = 999; // 무한 사용 플래그
-      localStorage.setItem('dailyUsage', JSON.stringify(usageData));
-      showToast('🎉 무한 사용이 활성화되었습니다!', 3000);
-    } else {
-      showToast(`📤 공유 완료! (${usageData[today].shareBonus}/2)`, 2000);
-    }
-  } else {
-    showToast('이미 무한 사용이 활성화되어 있습니다!', 2000);
-  }
-  
-  closeShareModal();
-  closeUsagePopup();
-  updateFloatingButtons();
-}
-
-// 책 읽기 완료 처리
-function completeBookReading() {
-  applyBookBonus();
-  closeBookModal();
 }
 
 // 플로팅 버튼 상태 업데이트
@@ -878,8 +677,8 @@ function setupGenerator(currentType) {
         showInterstitialAd();
       }
 
-      // API 키 확인 (암호화된 키 사용)
-      const userApiKey = getApiKey();
+      // API 키 확인
+      const userApiKey = localStorage.getItem('userApiKey');
       const useType = typeSelect ? typeSelect.value : currentType;
       
       console.log('🔗 API 호출 준비:', { useType, userApiKey: !!userApiKey });
@@ -964,7 +763,7 @@ function saveRecentCopy(text, type) {
 
 // === API 키 설정 UI ===
 function showAPIKeySettings() {
-  const currentKey = getApiKey();
+  const currentKey = localStorage.getItem('userApiKey');
   const hasKey = currentKey && currentKey.length > 0;
   
   const modal = document.createElement('div');
@@ -988,14 +787,14 @@ function showAPIKeySettings() {
 function saveAPIKey() {
   const apiKey = document.getElementById('apiKeyInput').value.trim();
   if (apiKey) {
-    saveApiKey(apiKey); // 암호화하여 저장
-    showToast('API 키가 암호화되어 저장되었습니다.');
+    localStorage.setItem('userApiKey', apiKey);
+    showToast('API 키가 저장되었습니다.');
   }
   closeAPIModal();
 }
 
 function removeAPIKey() {
-  localStorage.removeItem('enc_api_key'); // 암호화된 키 삭제
+  localStorage.removeItem('userApiKey');
   showToast('API 키가 삭제되었습니다.');
   closeAPIModal();
 }
@@ -1091,13 +890,13 @@ style.textContent = `
   }
 
   .floating-share {
-    background: #FFD700;
-    color: #333;
+    background: #4CAF50;
+    color: white;
   }
 
   .floating-book {
-    background: #FFD700;
-    color: #333;
+    background: #FF9800;
+    color: white;
   }
 
   .floating-btn:hover {
@@ -1215,146 +1014,6 @@ style.textContent = `
     
     .usage-popup h3 {
       font-size: 1.1rem;
-    }
-  }
-
-  /* === 공유/책 모달 스타일 === */
-  .share-modal-overlay,
-  .book-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    animation: fadeIn 0.3s ease;
-  }
-
-  .share-modal,
-  .book-modal {
-    background: white;
-    border-radius: 16px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    animation: slideUp 0.3s ease;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  }
-
-  .modal-header {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    padding: 20px;
-    border-radius: 16px 16px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .modal-header h3 {
-    margin: 0;
-    color: #333;
-    font-size: 1.2rem;
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #333;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s ease;
-  }
-
-  .modal-close:hover {
-    background: rgba(0,0,0,0.1);
-  }
-
-  .modal-content {
-    padding: 24px;
-  }
-
-  .modal-content p {
-    margin: 0 0 16px 0;
-    color: #666;
-    line-height: 1.5;
-  }
-
-  .url-container {
-    background: #f8f9fa;
-    padding: 12px;
-    border-radius: 8px;
-    margin: 20px 0;
-    border: 2px solid #e9ecef;
-  }
-
-  .url-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    font-size: 0.9rem;
-    color: #333;
-    text-align: center;
-    outline: none;
-  }
-
-  .complete-btn {
-    width: 100%;
-    background: #FFD700;
-    color: #333;
-    border: none;
-    padding: 14px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    margin-bottom: 16px;
-  }
-
-  .complete-btn:hover {
-    background: #FFC107;
-    transform: translateY(-1px);
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  /* 모바일 반응형 */
-  @media (max-width: 768px) {
-    .share-modal,
-    .book-modal {
-      margin: 20px;
-      max-height: 90vh;
-    }
-    
-    .modal-header {
-      padding: 16px;
-    }
-    
-    .modal-header h3 {
-      font-size: 1.1rem;
-    }
-    
-    .modal-content {
-      padding: 20px;
     }
   }
 `;
@@ -1495,7 +1154,25 @@ function bindMobileMenuEvents() {
   if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMenu);
 }
 
+// 헤더 로드
+function loadHeader() {
+  const headerPlaceholder = document.getElementById('header-placeholder');
+  if (headerPlaceholder) {
+    headerPlaceholder.innerHTML = HEADER_HTML;
+    setActiveNavigation();
+    bindMobileMenuEvents();
+    console.log('✅ 헤더 컴포넌트 로드 완료');
+  }
+}
 
+// 푸터 로드
+function loadFooter() {
+  const footerPlaceholder = document.getElementById('footer-placeholder');
+  if (footerPlaceholder) {
+    footerPlaceholder.innerHTML = FOOTER_HTML;
+    console.log('✅ 푸터 컴포넌트 로드 완료');
+  }
+}
 
 // 광고 로드
 function loadAds() {
@@ -1557,9 +1234,3 @@ window.incrementDailyUsage = incrementDailyUsage;
 window.applyShareBonus = applyShareBonus;
 window.applyBookBonus = applyBookBonus;
 window.updateFloatingButtons = updateFloatingButtons;
-window.showShareModal = showShareModal;
-window.showBookModal = showBookModal;
-window.closeShareModal = closeShareModal;
-window.closeBookModal = closeBookModal;
-window.completeShare = completeShare;
-window.completeBookReading = completeBookReading;
