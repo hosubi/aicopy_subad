@@ -77,9 +77,8 @@ async function callLLM(type, userText) {
   // 사용량 체크 (생성기 버튼에서만)
   const usageInfo = checkDailyUsage();
   if (!usageInfo.canUse) {
-    // 5회 초과시 팝업 표시
-    showUsageLimitPopup();
-    throw new Error(`오늘 사용량을 모두 사용했습니다. (${usageInfo.used}/${usageInfo.totalLimit}회)`);
+    // 일일 한계 도달시 플로팅 버튼 안내
+    throw new Error(`오늘 사용량을 모두 사용했습니다. (${usageInfo.used}/${usageInfo.totalLimit}회)\n\n💡 오른쪽 아래 공유/책 버튼을 클릭하면 일일 한도가 추가됩니다!`);
   }
   
   const copyInfo = CONFIG.COPY_TYPES[type] || { category: "general" };
@@ -317,17 +316,20 @@ function applyShareBonus() {
     usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
   }
   
+  // 처음 2회, 그 다음부터 1회씩 무한대로
+  let bonusAmount;
   if (usageData[today].shareBonus === 0) {
-    usageData[today].shareBonus += 2;
-    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
-    
-    showToast('🎉 공유 완료! +2회 추가되었습니다!', 3000);
-    updateFloatingButtons();
-    return true;
+    bonusAmount = 2; // 첫 번째는 2회
   } else {
-    showToast('이미 공유 보너스를 받으셨습니다!', 2000);
-    return false;
+    bonusAmount = 1; // 그 다음부터는 1회씩
   }
+  
+  usageData[today].shareBonus += bonusAmount;
+  localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+  
+  showToast(`🎉 공유 완료! +${bonusAmount}회 추가되었습니다!`, 3000);
+  updateFloatingButtons();
+  return true;
 }
 
 // 책 보너스 적용
@@ -339,17 +341,20 @@ function applyBookBonus() {
     usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
   }
   
+  // 처음 2회, 그 다음부터 1회씩 무한대로
+  let bonusAmount;
   if (usageData[today].bookBonus === 0) {
-    usageData[today].bookBonus += 2;
-    localStorage.setItem('dailyUsage', JSON.stringify(usageData));
-    
-    showToast('📚 책 확인 완료! +2회 추가되었습니다!', 3000);
-    updateFloatingButtons();
-    return true;
+    bonusAmount = 2; // 첫 번째는 2회
   } else {
-    showToast('이미 책 보너스를 받으셨습니다!', 2000);
-    return false;
+    bonusAmount = 1; // 그 다음부터는 1회씩
   }
+  
+  usageData[today].bookBonus += bonusAmount;
+  localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+  
+  showToast(`📚 책 확인 완료! +${bonusAmount}회 추가되었습니다!`, 3000);
+  updateFloatingButtons();
+  return true;
 }
 
 // 5회 사용 제한 팝업
@@ -365,19 +370,29 @@ function showUsageLimitPopup() {
       <div class="popup-icon">⚠️</div>
       <h3>일일 사용량을 다 사용하셨습니다</h3>
       <p>도움이 되셨다면,<br><strong>공유하고 2회 더 사용하세요!</strong></p>
-      <p class="popup-hint">오른쪽 아래 <strong>책버튼</strong>을 확인하시면 2회 더!</p>
+      <p class="popup-hint">마케팅 책 구매로 소정의 수수료를 받을 수 있습니다.<br>마케팅 공부는 더 좋은 서비스 업그레이드에 도움이 됩니다!</p>
       
       <div class="popup-buttons">
+
+
+
         <button class="popup-btn popup-btn-share" onclick="handleFloatingShare()">
-          📤 공유하고 +2회
+          📤 도움필요한사람에게 공유하고 +2회
         </button>
+        
+
+
         <button class="popup-btn popup-btn-book" onclick="handleFloatingBook()">
-          📚 책보고 +2회  
+          📚 마케팅책 구매로 +2회  
         </button>
         <button class="popup-btn popup-btn-close" onclick="closeUsagePopup()">
           나중에
         </button>
       </div>
+            <script src="https://ads-partners.coupang.com/g.js"></script>
+<script>
+    new PartnersCoupang.G({"id":848257,"trackingCode":"AF8239972","subId":null,"template":"carousel","width":"680","height":"140"});
+</script>
     </div>
   `;
   
@@ -426,17 +441,15 @@ function createFloatingButtons() {
 
 // 플로팅 버튼 클릭 처리
 function handleFloatingShare() {
+  // 항상 팝업을 먼저 표시
+  showUsageLimitPopup();
   const success = applyShareBonus();
-  if (success) {
-    closeUsagePopup();
-  }
 }
 
 function handleFloatingBook() {
+  // 항상 팝업을 먼저 표시
+  showUsageLimitPopup();
   const success = applyBookBonus();
-  if (success) {
-    closeUsagePopup();
-  }
 }
 
 // 플로팅 버튼 상태 업데이트
@@ -445,27 +458,24 @@ function updateFloatingButtons() {
   const shareBtn = document.getElementById('floating-share');
   const bookBtn = document.getElementById('floating-book');
   
+  // 항상 활성화 상태로 유지 (무한 보너스)
   if (shareBtn) {
-    if (usageInfo.shareBonus > 0) {
-      shareBtn.style.opacity = '0.5';
-      shareBtn.style.cursor = 'not-allowed';
-      shareBtn.title = '이미 공유 보너스를 받으셨습니다';
-    } else {
-      shareBtn.style.opacity = '1';
-      shareBtn.style.cursor = 'pointer';
+    shareBtn.style.opacity = '1';
+    shareBtn.style.cursor = 'pointer';
+    if (usageInfo.shareBonus === 0) {
       shareBtn.title = '공유하고 +2회 받기';
+    } else {
+      shareBtn.title = '공유하고 +1회 받기';
     }
   }
   
   if (bookBtn) {
-    if (usageInfo.bookBonus > 0) {
-      bookBtn.style.opacity = '0.5';
-      bookBtn.style.cursor = 'not-allowed';
-      bookBtn.title = '이미 책 보너스를 받으셨습니다';
-    } else {
-      bookBtn.style.opacity = '1';
-      bookBtn.style.cursor = 'pointer';
+    bookBtn.style.opacity = '1';
+    bookBtn.style.cursor = 'pointer';
+    if (usageInfo.bookBonus === 0) {
       bookBtn.title = '마케팅 자료보고 +2회 받기';
+    } else {
+      bookBtn.title = '마케팅 자료보고 +1회 받기';
     }
   }
 }
@@ -890,13 +900,13 @@ style.textContent = `
   }
 
   .floating-share {
-    background: #4CAF50;
-    color: white;
+    background: #FFD700;
+    color: #333;
   }
 
   .floating-book {
-    background: #FF9800;
-    color: white;
+    background: #FFD700;
+    color: #333;
   }
 
   .floating-btn:hover {

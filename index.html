@@ -147,8 +147,8 @@
     <div class="grid">
       <a class="card" href="/g/naver-home.html">네이버 홈판용 제목</a>
       <a class="card" href="/g/place-copy.html">플레이스 소개글</a>
-      <a class="card" href="/g/receipt-review.html">영수증 리뷰</a>
-      <a class="card" href="/g/cupng-response.html">쿠팡이츠 댓글답글</a>
+      <a class="card" href="/business/receipt-review.html">네이버 영수증리뷰</a>
+      <a class="card" href="/business/cupng-response.html">쿠팡이츠 댓글답글</a>
       <a class="card" href="/business/menu-description.html">배민 메뉴설명</a>
       <a class="card" href="/g/blog-intro.html">블로그서론(체류↑)</a>
       <a class="card" href="/g/cta.html">행동 유도 카피</a>
@@ -370,15 +370,7 @@
       <p>© 2025 AICOPY by SUBAD.KR · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></p>
     </div>
   </div>
-  <div id="floating-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px;">
-    <button id="floating-share" class="floating-btn floating-share" title="공유하고 +2회 받기" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: #FFD700; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 18px;">
-      📤
-    </button>
-    <button id="floating-book" class="floating-btn floating-book" title="마케팅 자료보고 +2회 받기" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: #FFD700; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 18px;">
-      📚
-    </button>
-  </div>
-</footer>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // 모바일 메뉴 이벤트 바인딩
@@ -405,26 +397,7 @@
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMenu);
   });
   </script>
-<script>
-  // 플로팅 버튼 이벤트
-  document.addEventListener('DOMContentLoaded', function() {
-    const shareBtn = document.getElementById('floating-share');
-    const bookBtn = document.getElementById('floating-book');
-    
-    if (shareBtn) {
-      shareBtn.addEventListener('click', function() {
-        alert('공유 기능 - 개발 중입니다!');
-      });
-    }
-    
-    if (bookBtn) {
-      bookBtn.addEventListener('click', function() {
-        alert('마케팅 자료 - 개발 중입니다!');
-      });
-    }
-  });
-  </script>
-<!-- 모바일 메뉴 이벤트는 app.js에서 자동 처리됩니다 -->
+
 
 
 <!-- === 메모패드 기능 === -->
