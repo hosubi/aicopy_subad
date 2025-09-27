@@ -53,7 +53,7 @@ const CONFIG = {
     
     // 추가 페이지들 (향후 확장용)
     "youtube-shorts": "https://hook.make.com/youtube-webhook",
-    "menu-description": "https://hook.make.com/menu-webhook",
+    "menu-description": "https://hook.eu2.make.com/8wl1arczu59lfmiyv1dj3s3x79hdlw7o",
     "event-promotion": "https://hook.make.com/event-webhook",
     "review-response": "https://hook.eu2.make.com/0m1z7yr62g1tbq4ole9nyn4jdivvr37u",
     "cupang-response": "https://hook.eu2.make.com/mvqwytao6boof4sb17xhid36snape639",
@@ -81,6 +81,7 @@ const CONFIG = {
     "event-promotion": { name: "이벤트 홍보", category: "business" },
     "review-response": { name: "리뷰 답변", category: "business" },
     "kakao-message": { name: "카카오 메시지", category: "business" },
+    "cupng-response": { name: "쿠팡이츠 댓글답글", category: "business" },
   }
 };
 
@@ -156,13 +157,14 @@ async function callLLM(type, userText) {
       controller.abort();
     }, 30000);
     
-    onst response = await fetch(webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Origin": window.location.origin,           // https://aicopy.subad.kr
         "X-Domain": window.location.hostname,       // aicopy.subad.kr  
-        "Referer": window.location.href            // 전체 URL
+        "Referer": window.location.href,            // 전체 URL
+      
       },
       body: JSON.stringify({ 
         prompt: cleanText,
