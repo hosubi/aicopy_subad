@@ -121,5 +121,25 @@
       <category>전환최적화</category>
     </item>
     
+    <item>
+      <title>쿠팡이츠 댓글 답글 생성기</title>
+      <link>https://aicopy.subad.kr/business/cupng-response.html</link>
+      <description>쿠팡이츠 리뷰에 대한 전문적이고 친근한 답글을 AI가 생성합니다. 고객 만족도를 높이고 재주문을 유도하세요.</description>
+      <content:encoded><![CDATA[
+        <p>쿠팡이츠 리뷰 관리는 자영업자에게 중요한 마케팅 요소입니다. 답글 생성기의 특징:</p>
+        <ul>
+          <li>감사 인사와 진심 어린 답변</li>
+          <li>불만 리뷰에 대한 전문적 대응</li>
+          <li>재방문 유도 메시지 포함</li>
+          <li>브랜드 이미지 향상 톤앤매너</li>
+        </ul>
+        <p><a href="https://aicopy.subad.kr/business/cupng-response.html">리뷰 답글 작성하기</a></p>
+      ]]></content:encoded>
+      <pubDate>Sat, 14 Dec 2024 16:00:00 +0900</pubDate>
+      <guid isPermaLink="true">https://aicopy.subad.kr/business/cupng-response.html</guid>
+      <category>자영업자</category>
+      <category>쿠팡이츠</category>
+    </item>
+    
   </channel>
 </rss>

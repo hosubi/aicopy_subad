@@ -1,23 +1,57 @@
-QuickMVP — AdSense 친화 다중 페이지 + Make.com 프록시 템플릿
+터지는 마케팅 카피라이터 AI - AICOPY
+========================================
 
-1) /assets/app.js 에서 아래 두 값을 교체하세요.
-   - MAKE_WEBHOOK_URL = "https://hook.make.com/XXXX"
-   - APP_SECRET = "YOUR_RANDOM_SECRET"  // Make 필터와 동일
+🚀 자영업자 매출 1,000만원 증대의 비밀, AI 카피라이팅
 
-2) Make.com 시나리오
-   - Webhook → Filter(X-App-Secret, 길이 제한, type 화이트리스트) →
-     Set variables(system_prompt) → HTTP(OpenAI) → Webhook Response({ text })
-   - type 값: title-banger, naver-home, place-copy, blog-intro, cta, hso, swot, paid-blog
+## 서비스 소개
 
-3) AdSense
-   - 모든 페이지 <head>에 주석 처리된 스크립트를 해제하고 client/slot 값을 입력하세요.
-   - 광고 영역은 .ad-wrap placeholder로 CLS 방지.
-   - 버튼/입력 폼과 최소 24px 이상 여백을 두세요.
+AICOPY는 자영업자와 마케터를 위한 AI 기반 카피라이팅 도구입니다.
+네이버, 인스타그램, 블로그 등 모든 마케팅 채널에 최적화된 
+고품질 카피를 몇 초 만에 생성할 수 있습니다.
 
-4) 배포
-   - 워드프레스 도메인의 서브폴더에 업로드하거나, 정적 호스팅(Netlify/CF Pages) 사용.
-   - 내부 페이지는 /g/ 폴더에 있습니다.
+## 주요 기능
 
-5) 커스터마이즈
-   - 각 페이지 상단의 "후킹/걱정/해결" 한 줄은 자유롭게 수정하세요.
-   - /g/ 에 원하는 생성기 페이지를 복제 후 type과 카피만 변경하면 확장됩니다.
+### 📝 일반 마케팅 카피
+- 터지는 썸네일 제목 생성
+- 네이버 홈판용 SEO 제목
+- 네이버 플레이스 소개글
+- 블로그 서론 (체류시간 3배 증가)
+- 전환율 200% 향상 CTA 카피
+- HSO 3줄 전환 구조
+- USP 차별화 카피
+
+### 📱 소셜미디어 카피
+- 인스타그램 감성 캡션
+- 쓰레드 반말 트렌드 카피
+- 유튜브 쇼츠 스크립트
+
+### 🏪 자영업자 특화 카피
+- 배달앱 메뉴 설명
+- 이벤트 홍보 문구
+- 고객 리뷰 답변
+- 쿠팡이츠 댓글 답글
+
+## 사용법
+
+1. 원하는 카피 유형 선택
+2. 키워드/제품/지역/특징 입력
+3. AI 생성 버튼 클릭
+4. 생성된 카피를 복사하여 활용
+
+## 특징
+
+✅ 무료 사용 (일일 5회 + 보너스)
+✅ 즉시 생성 (3초 이내)
+✅ 검증된 마케팅 공식 적용
+✅ 모바일 최적화
+✅ 자동 저장 메모패드
+
+## 연락처
+
+웹사이트: https://aicopy.subad.kr
+개발: SUBAD.KR
+이메일: admin@subad.kr
+
+## 라이선스
+
+Copyright 2024 SUBAD.KR. All rights reserved.

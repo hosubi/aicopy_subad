@@ -382,72 +382,157 @@
   
   <!-- 플로팅 버튼 이벤트 -->
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const shareBtn = document.getElementById('floating-share');
-    const bookBtn = document.getElementById('floating-book');
-    
-    if (shareBtn) {
-      shareBtn.addEventListener('click', function() {
-        // 현재 페이지 URL과 제목 복사
-        const currentUrl = window.location.href;
-        const pageTitle = document.title;
-        const shareText = `${pageTitle}\n${currentUrl}`;
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('플로팅 버튼 스크립트 시작');
+      
+      // 필요한 함수들을 직접 정의
+      function showToast(message) {
+        // alert 대신 토스트 사용
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+          position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+          background: #333; color: white; padding: 12px 24px; border-radius: 8px;
+          font-weight: 500; z-index: 10000;
+        `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+      
+      function applyBonus(type) {
+        const today = new Date().toDateString();
+        const usageData = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
         
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(shareText).then(() => {
-            alert('🔗 링크가 복사되었습니다! 친구에게 공유해보세요!');
-          });
+        if (!usageData[today]) {
+          usageData[today] = { used: 0, shareBonus: 0, bookBonus: 0 };
         }
         
-        // 팝업 표시 (app.js 로드 후)
-        if (typeof showUsageLimitPopup === 'function') {
+        const bonusKey = type + 'Bonus';
+        let bonusAmount = usageData[today][bonusKey] === 0 ? 2 : 1;
+        usageData[today][bonusKey] += bonusAmount;
+        localStorage.setItem('dailyUsage', JSON.stringify(usageData));
+        
+        const emoji = type === 'share' ? '🎉' : '📚';
+        const action = type === 'share' ? '공유' : '책 확인';
+        showToast(`${emoji} ${action} 완료! +${bonusAmount}회 추가되었습니다!`);
+      }
+      
+      function showUsageLimitPopup() {
+        const existingPopup = document.querySelector('.usage-popup-overlay');
+        if (existingPopup) existingPopup.remove();
+        
+        const popup = document.createElement('div');
+        popup.className = 'usage-popup-overlay';
+        popup.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.6); display: flex; align-items: center;
+          justify-content: center; z-index: 9999;
+        `;
+        
+        popup.innerHTML = `
+          <div style="background: white; padding: 30px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <div style="font-size: 3rem; margin-bottom: 16px;">⚠️</div>
+            <h3 style="margin: 0 0 16px 0; color: #333; font-size: 1.25rem;">일일 사용량을 다 사용하셨습니다</h3>
+            <p style="margin: 0 0 12px 0; color: #666; line-height: 1.5;">도움이 되셨다면,<br><strong>공유하고 2회 더 사용하세요!</strong></p>
+            <p style="background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 4px solid #FF9800; margin: 16px 0; font-size: 0.9rem;">마케팅 책 구매로 소정의 수수료를 받을 수 있습니다.<br>마케팅 공부는 더 좋은 서비스 업그레이드에 도움이 됩니다!</p>
+            
+            <iframe src="https://ads-partners.coupang.com/widgets.html?id=848257&template=carousel&trackingCode=AF8239972&subId=&width=680&height=140&tsource=" 
+                    width="100%" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+              <button onclick="handlePopupShare()" style="padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; background: #FFD700; color: #333;">
+                📤 도움필요한사람에게 공유하고 +2회
+              </button>
+              <button onclick="handlePopupBook()" style="padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; background: #FFD700; color: #333;">
+                📚 마케팅책 구매로 +2회  
+              </button>
+              <button onclick="closePopup()" style="padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; background: #f5f5f5; color: #666;">
+                나중에
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(popup);
+      }
+      
+      // 전역 함수 등록
+      window.handlePopupShare = function() {
+        applyBonus('share');
+        document.querySelector('.usage-popup-overlay')?.remove();
+      };
+      
+      window.handlePopupBook = function() {
+        applyBonus('book');
+        document.querySelector('.usage-popup-overlay')?.remove();
+      };
+      
+      window.closePopup = function() {
+        document.querySelector('.usage-popup-overlay')?.remove();
+      };
+      
+      // 플로팅 버튼 이벤트
+      const shareBtn = document.getElementById('floating-share');
+      const bookBtn = document.getElementById('floating-book');
+      
+      if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+          // 1. 클립보드 복사
+          const currentUrl = window.location.href;
+          const pageTitle = document.title;
+          const shareText = `${pageTitle}\n${currentUrl}`;
+          
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(shareText).then(() => {
+              showToast('🔗 링크가 복사되었습니다! 친구에게 공유해보세요!');
+            });
+          } else {
+            showToast('🔗 링크 복사 완료!');
+          }
+          
+          // 2. 팝업 표시 (항상)
           showUsageLimitPopup();
-        }
-        if (typeof applyShareBonus === 'function') {
-          applyShareBonus();
-        }
-      });
-    }
-    
-    if (bookBtn) {
-      bookBtn.addEventListener('click', function() {
-        // 현재 페이지 URL과 제목 복사
-        const currentUrl = window.location.href;
-        const pageTitle = document.title;
-        const shareText = `${pageTitle}\n${currentUrl}`;
-        
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(shareText).then(() => {
-            alert('🔗 링크가 복사되었습니다! 마케팅 자료를 확인해보세요!');
-          });
-        }
-        
-        // 팝업 표시 (app.js 로드 후)
-        if (typeof showUsageLimitPopup === 'function') {
-          showUsageLimitPopup();
-        }
-        if (typeof applyBookBonus === 'function') {
-          applyBookBonus();
-        }
-      });
-    }
-    
-    // 호버 효과
-    [shareBtn, bookBtn].forEach(btn => {
-      if (btn) {
-        btn.addEventListener('mouseenter', function() {
-          this.style.transform = 'translateY(-2px)';
-          this.style.boxShadow = '0 6px 20px rgba(0,0,0,0.25)';
-        });
-        
-        btn.addEventListener('mouseleave', function() {
-          this.style.transform = 'translateY(0)';
-          this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
         });
       }
+      
+      if (bookBtn) {
+        bookBtn.addEventListener('click', function() {
+          // 1. 클립보드 복사
+          const currentUrl = window.location.href;
+          const pageTitle = document.title;
+          const shareText = `${pageTitle}\n${currentUrl}`;
+          
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(shareText).then(() => {
+              showToast('🔗 링크가 복사되었습니다! 마케팅 자료를 확인해보세요!');
+            });
+          } else {
+            showToast('🔗 링크 복사 완료!');
+          }
+          
+          // 2. 팝업 표시 (항상)
+          showUsageLimitPopup();
+        });
+      }
+      
+      // 호버 효과
+      [shareBtn, bookBtn].forEach(btn => {
+        if (btn) {
+          btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 6px 20px rgba(0,0,0,0.25)';
+          });
+          
+          btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+          });
+        }
+      });
+      
+      console.log('플로팅 버튼 스크립트 완료');
     });
-  });
-  </script>
+    </script>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -103,7 +103,13 @@
     <priority>0.8</priority>
   </url>
   
-  
+  <url>
+    <loc>https://aicopy.subad.kr/business/cupng-response.html</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- RSS 피드 -->
   <url>
     <loc>https://aicopy.subad.kr/rss.xml</loc>

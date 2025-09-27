@@ -1,0 +1,352 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- SEO 메타 태그 (500 페이지용) -->
+<title>서버 오류가 발생했습니다 - AICOPY</title>
+<meta name="description" content="일시적인 서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요. AICOPY AI 카피라이팅 서비스">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Open Graph -->
+<meta property="og:title" content="서버 오류가 발생했습니다 - AICOPY">
+<meta property="og:description" content="일시적인 서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.">
+<meta property="og:image" content="https://aicopy.subad.kr/og-main.png">
+<meta property="og:url" content="https://aicopy.subad.kr/500.html">
+<meta property="og:type" content="website">
+
+<!-- 스타일시트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://pagead2.googlesyndication.com"/>
+<link rel="preconnect" href="https://googleads.g.doubleclick.net"/>
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/app.js"></script>
+
+<style>
+/* 500 페이지 전용 스타일 */
+.error-container {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.error-code {
+  font-size: 8rem;
+  font-weight: 700;
+  color: #ff6b35;
+  line-height: 1;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.error-description {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.error-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.error-btn-primary {
+  background: var(--primary-yellow-dark);
+  color: white;
+}
+
+.error-btn-primary:hover {
+  background: var(--primary-yellow);
+  transform: translateY(-2px);
+}
+
+.error-btn-secondary {
+  background: var(--bg-light);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+}
+
+.error-btn-secondary:hover {
+  background: var(--bg-white);
+  border-color: var(--primary-yellow-dark);
+  transform: translateY(-2px);
+}
+
+.error-btn-refresh {
+  background: #28a745;
+  color: white;
+}
+
+.error-btn-refresh:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.status-info {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%);
+  border-left: 4px solid #ff6b35;
+  padding: 20px;
+  margin: 30px 0;
+  border-radius: 0 8px 8px 0;
+  max-width: 600px;
+}
+
+.status-info h4 {
+  color: #ff6b35;
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.status-info p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.popular-tools {
+  max-width: 800px;
+  width: 100%;
+}
+
+.popular-tools h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.tool-card {
+  display: block;
+  padding: 20px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-yellow);
+}
+
+.tool-card h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.tool-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.retry-timer {
+  background: var(--bg-light);
+  padding: 15px 25px;
+  border-radius: 25px;
+  margin: 20px 0;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .error-code {
+    font-size: 6rem;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+</head>
+
+<body>
+<!-- 헤더 placeholder -->
+<header class="header">
+  <div class="header-container">
+    <div class="header-row">
+      <a href="/" class="logo">터마카AI</a>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="desktop-nav">
+        <a href="/" class="nav-link">홈</a>
+        <a href="/index.html" class="nav-link">터지는 제목</a>
+        <a href="/social/instagram-caption.html" class="nav-link">인스타그램</a>
+        <a href="/social/threads-copy.html" class="nav-link">쓰레드</a>
+        <a href="/#business" class="nav-link">자영업자</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="error-container">
+    <div class="error-code">500</div>
+    <h1 class="error-title">⚠️ 서버 오류가 발생했습니다</h1>
+    <p class="error-description">
+      일시적인 서버 문제로 서비스에 접속할 수 없습니다.<br>
+      잠시 후 다시 시도해주시거나 새로고침을 해보세요.
+    </p>
+
+    <div class="retry-timer">
+      ⏱️ 자동 새로고침까지: <span id="countdown">30</span>초
+    </div>
+
+    <div class="status-info">
+      <h4>🔧 서버 상태 안내</h4>
+      <p>현재 다음과 같은 문제가 발생할 수 있습니다:</p>
+      <ul style="text-align: left; margin: 10px 0 0 20px;">
+        <li>AI 서비스 일시적 과부하</li>
+        <li>서버 점검 또는 업데이트</li>
+        <li>네트워크 연결 문제</li>
+        <li>데이터베이스 연결 오류</li>
+      </ul>
+      <p style="margin-top: 15px;"><strong>💡 해결 방법:</strong> 잠시 기다린 후 새로고침하거나, 다른 카피라이팅 도구를 이용해보세요.</p>
+    </div>
+
+    <div class="error-actions">
+      <a href="javascript:location.reload()" class="error-btn error-btn-refresh">
+        🔄 새로고침
+      </a>
+      <a href="/" class="error-btn error-btn-primary">
+        🏠 홈으로 돌아가기
+      </a>
+      <a href="javascript:history.back()" class="error-btn error-btn-secondary">
+        ← 이전 페이지로
+      </a>
+    </div>
+
+    <div class="popular-tools">
+      <h3>🔥 다른 AI 카피라이팅 도구 이용하기</h3>
+      <div class="tools-grid">
+        <a href="/g/naver-home.html" class="tool-card">
+          <h4>네이버 홈판용 제목</h4>
+          <p>검색 1위 노출을 위한 SEO 최적화 제목 생성</p>
+        </a>
+        
+        <a href="/social/instagram-caption.html" class="tool-card">
+          <h4>인스타그램 캡션</h4>
+          <p>감성적이고 공감가는 인스타 캡션 자동 생성</p>
+        </a>
+        
+        <a href="/g/place-copy.html" class="tool-card">
+          <h4>네이버 플레이스</h4>
+          <p>고객 유입을 늘리는 플레이스 소개글 작성</p>
+        </a>
+        
+        <a href="/g/blog-intro.html" class="tool-card">
+          <h4>블로그 서론</h4>
+          <p>체류시간 3배 늘리는 매력적인 서론 생성</p>
+        </a>
+        
+        <a href="/business/menu-description.html" class="tool-card">
+          <h4>메뉴 설명</h4>
+          <p>식욕을 자극하는 배달앱 메뉴 설명 작성</p>
+        </a>
+        
+        <a href="/g/cta.html" class="tool-card">
+          <h4>CTA 카피</h4>
+          <p>전환율 200% 향상시키는 행동 유도 문구</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 푸터 placeholder -->
+<footer class="footer">
+  <div class="footer-container">
+     <div class="footer-bottom">
+      <p>© 2025 AICOPY by SUBAD.KR · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 자동 새로고침 카운트다운
+let countdown = 30;
+const countdownElement = document.getElementById('countdown');
+
+const timer = setInterval(() => {
+  countdown--;
+  if (countdownElement) {
+    countdownElement.textContent = countdown;
+  }
+  
+  if (countdown <= 0) {
+    clearInterval(timer);
+    location.reload();
+  }
+}, 1000);
+
+// 페이지 포커스 시 카운트다운 리셋
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    countdown = 30;
+  }
+});
+</script>
+
+</body></html>

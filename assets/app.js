@@ -334,7 +334,6 @@ function applyShareBonus() {
   localStorage.setItem('dailyUsage', JSON.stringify(usageData));
   
   showToast(`🎉 공유 완료! +${bonusAmount}회 추가되었습니다!`, 3000);
-  updateFloatingButtons();
   return true;
 }
 
@@ -359,7 +358,6 @@ function applyBookBonus() {
   localStorage.setItem('dailyUsage', JSON.stringify(usageData));
   
   showToast(`📚 책 확인 완료! +${bonusAmount}회 추가되었습니다!`, 3000);
-  updateFloatingButtons();
   return true;
 }
 
@@ -381,13 +379,11 @@ function showUsageLimitPopup() {
 
 
 
-        <button class="popup-btn popup-btn-share" onclick="handleFloatingShare()">
+        <button class="popup-btn popup-btn-share" onclick="handlePopupShare()">
           📤 도움필요한사람에게 공유하고 +2회
         </button>
         
-
-
-        <button class="popup-btn popup-btn-book" onclick="handleFloatingBook()">
+        <button class="popup-btn popup-btn-book" onclick="handlePopupBook()">
           📚 마케팅책 구매로 +2회  
         </button>
         <button class="popup-btn popup-btn-close" onclick="closeUsagePopup()">
@@ -408,89 +404,8 @@ function closeUsagePopup() {
   if (popup) popup.remove();
 }
 
-// 플로팅 버튼 생성
-function createFloatingButtons() {
-  const existing = document.getElementById('floating-container');
-  if (existing) existing.remove();
-  
-  const floatingContainer = document.createElement('div');
-  floatingContainer.id = 'floating-container';
-  floatingContainer.innerHTML = `
-    <div class="floating-buttons">
-      <button id="floating-share" class="floating-btn floating-share" title="공유하고 +2회 받기">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
-        </svg>
-      </button>
-      
-      <button id="floating-book" class="floating-btn floating-book" title="마케팅 자료보고 +2회 받기">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
-        </svg>
-      </button>
-    </div>
-  `;
-  
-  document.body.appendChild(floatingContainer);
-  
-  // 이벤트 바인딩
-  const shareBtn = document.getElementById('floating-share');
-  const bookBtn = document.getElementById('floating-book');
-  
-  if (shareBtn) shareBtn.addEventListener('click', handleFloatingShare);
-  if (bookBtn) bookBtn.addEventListener('click', handleFloatingBook);
-  
-  updateFloatingButtons();
-}
 
-// 플로팅 버튼 클릭 처리
-function handleFloatingShare() {
-  // 현재 페이지 URL 클립보드에 복사
-  const currentUrl = window.location.href;
-  copyToClipboard(currentUrl);
-  
-  // 팝업 표시
-  showUsageLimitPopup();
-  const success = applyShareBonus();
-}
 
-function handleFloatingBook() {
-  // 현재 페이지 URL 클립보드에 복사
-  const currentUrl = window.location.href;
-  copyToClipboard(currentUrl);
-  
-  // 팝업 표시
-  showUsageLimitPopup();
-  const success = applyBookBonus();
-}
-
-// 플로팅 버튼 상태 업데이트
-function updateFloatingButtons() {
-  const usageInfo = checkDailyUsage();
-  const shareBtn = document.getElementById('floating-share');
-  const bookBtn = document.getElementById('floating-book');
-  
-  // 항상 활성화 상태로 유지 (무한 보너스)
-  if (shareBtn) {
-    shareBtn.style.opacity = '1';
-    shareBtn.style.cursor = 'pointer';
-    if (usageInfo.shareBonus === 0) {
-      shareBtn.title = '공유하고 +2회 받기';
-    } else {
-      shareBtn.title = '공유하고 +1회 받기';
-    }
-  }
-  
-  if (bookBtn) {
-    bookBtn.style.opacity = '1';
-    bookBtn.style.cursor = 'pointer';
-    if (usageInfo.bookBonus === 0) {
-      bookBtn.title = '마케팅 자료보고 +2회 받기';
-    } else {
-      bookBtn.title = '마케팅 자료보고 +1회 받기';
-    }
-  }
-}
 
 // === UI 관련 함수 ===
 
@@ -887,44 +802,6 @@ style.textContent = `
     font-weight: 500;
   }
 
-  /* === 플로팅 버튼 스타일 === */
-  .floating-buttons {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .floating-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-  }
-
-  .floating-share {
-    background: #FFD700;
-    color: #333;
-  }
-
-  .floating-book {
-    background: #FFD700;
-    color: #333;
-  }
-
-  .floating-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-  }
 
   /* === 사용량 제한 팝업 스타일 === */
   .usage-popup-overlay {
@@ -1015,15 +892,6 @@ style.textContent = `
 
   /* === 모바일 반응형 === */
   @media (max-width: 768px) {
-    .floating-buttons {
-      bottom: 80px;
-      right: 16px;
-    }
-    
-    .floating-btn {
-      width: 45px;
-      height: 45px;
-    }
     
     .usage-popup {
       padding: 24px 20px;
@@ -1187,16 +1055,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // 공통 컴포넌트 먼저 로드
   loadCommonComponents();
   
-  // 플로팅 버튼 즉시 생성 (항상 떠있게)
-  createFloatingButtons();
-  
-  // 주기적으로 플로팅 버튼 상태 확인 및 재생성
-  setInterval(() => {
-    if (!document.getElementById('floating-container')) {
-      console.log('플로팅 버튼 재생성');
-      createFloatingButtons();
-    }
-  }, 2000); // 2초마다 확인
 });
 
 // 전역 함수 export
@@ -1214,13 +1072,9 @@ window.loadCommonComponents = loadCommonComponents;
 window.loadHeader = loadHeader;
 window.loadFooter = loadFooter;
 window.loadAds = loadAds;
-window.handleFloatingShare = handleFloatingShare;
-window.handleFloatingBook = handleFloatingBook;
 window.closeUsagePopup = closeUsagePopup;
 window.checkDailyUsage = checkDailyUsage;
 window.incrementDailyUsage = incrementDailyUsage;
 window.applyShareBonus = applyShareBonus;
 window.applyBookBonus = applyBookBonus;
-window.updateFloatingButtons = updateFloatingButtons;
 window.initializeUsageCount = initializeUsageCount;
-window.createFloatingButtons = createFloatingButtons;

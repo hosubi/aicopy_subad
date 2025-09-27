@@ -3,12 +3,17 @@
 
 User-agent: *
 Allow: /
-Disallow: /assets/app.js
 Disallow: /api/
 Disallow: /admin/
+Disallow: /login.html
 
-# Sitemap location
+# Allow important assets for proper rendering
+Allow: /assets/
+Allow: /img/
+
+# Sitemap and RSS feed
 Sitemap: https://aicopy.subad.kr/sitemap.xml
+Sitemap: https://aicopy.subad.kr/rss.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
