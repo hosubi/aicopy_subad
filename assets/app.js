@@ -377,7 +377,7 @@ function showUsageLimitPopup() {
       <h3>일일 사용량을 다 사용하셨습니다</h3>
       <p>도움이 되셨다면,<br><strong>공유하고 2회 더 사용하세요!</strong></p>
       <p class="popup-hint">마케팅 책 구매로 소정의 수수료를 받을 수 있습니다.<br>마케팅 공부는 더 좋은 서비스 업그레이드에 도움이 됩니다!</p>
-<iframe src="https://ads-partners.coupang.com/widgets.html?id=848257&template=carousel&trackingCode=AF8239972&subId=&width=680&height=140&tsource=" width="680" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>      <div class="popup-buttons">
+<iframe src="https://ads-partners.coupang.com/widgets.html?id=848257&template=carousel&trackingCode=AF8239972&subId=&width=680&height=140&tsource=" width="100%" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>      <div class="popup-buttons">
 
 
 
@@ -1176,51 +1176,11 @@ function bindMobileMenuEvents() {
   if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMenu);
 }
 
-// 헤더 로드
-function loadHeader() {
-  const headerPlaceholder = document.getElementById('header-placeholder');
-  if (headerPlaceholder) {
-    headerPlaceholder.innerHTML = HEADER_HTML;
-    setActiveNavigation();
-    bindMobileMenuEvents();
-    console.log('✅ 헤더 컴포넌트 로드 완료');
-  }
-}
 
-// 푸터 로드
-function loadFooter() {
-  const footerPlaceholder = document.getElementById('footer-placeholder');
-  if (footerPlaceholder) {
-    footerPlaceholder.innerHTML = FOOTER_HTML;
-    console.log('✅ 푸터 컴포넌트 로드 완료');
-  }
-}
 
-// 광고 로드
-function loadAds() {
-  // 상단 광고
-  const topAdPlaceholder = document.getElementById('ad-top-placeholder');
-  if (topAdPlaceholder) {
-    topAdPlaceholder.innerHTML = AD_TOP_HTML;
-    console.log('✅ 상단 광고 컴포넌트 로드 완료');
-  }
+
+
   
-  // 하단 광고
-  const bottomAdPlaceholder = document.getElementById('ad-bottom-placeholder');
-  if (bottomAdPlaceholder) {
-    bottomAdPlaceholder.innerHTML = AD_BOTTOM_HTML;
-    console.log('✅ 하단 광고 컴포넌트 로드 완료');
-  }
-}
-
-// 모든 공통 컴포넌트 로드
-function loadCommonComponents() {
-  console.log('🔧 공통 컴포넌트 로딩 시작');
-  loadHeader();
-  loadFooter();
-  loadAds();
-  console.log('🎉 모든 공통 컴포넌트 로딩 완료');
-}
 
 // DOMContentLoaded 이벤트에 공통 컴포넌트 로더 추가
 document.addEventListener('DOMContentLoaded', function() {
