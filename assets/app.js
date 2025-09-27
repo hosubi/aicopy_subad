@@ -258,6 +258,12 @@ function trackAPIUsage(apiKey) {
   localStorage.setItem('apiUsage', JSON.stringify(usage));
 }
 
+// 사용량 초기화 함수 (호환성용)
+function initializeUsageCount() {
+  // checkDailyUsage 함수가 이미 초기화를 처리함
+  checkDailyUsage();
+}
+
 // === 일일 사용량 관리 (5회 제한) ===
 function checkDailyUsage() {
   const today = new Date().toDateString();
@@ -1215,10 +1221,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // 공통 컴포넌트 먼저 로드
   loadCommonComponents();
   
-  // 플로팅 버튼 생성 (약간 지연)
-  setTimeout(() => {
-    createFloatingButtons();
-  }, 500);
+  // 플로팅 버튼 즉시 생성 (항상 떠있게)
+  createFloatingButtons();
+  
+  // 주기적으로 플로팅 버튼 상태 확인 및 재생성
+  setInterval(() => {
+    if (!document.getElementById('floating-container')) {
+      console.log('플로팅 버튼 재생성');
+      createFloatingButtons();
+    }
+  }, 2000); // 2초마다 확인
 });
 
 // 전역 함수 export
@@ -1244,3 +1256,5 @@ window.incrementDailyUsage = incrementDailyUsage;
 window.applyShareBonus = applyShareBonus;
 window.applyBookBonus = applyBookBonus;
 window.updateFloatingButtons = updateFloatingButtons;
+window.initializeUsageCount = initializeUsageCount;
+window.createFloatingButtons = createFloatingButtons;
