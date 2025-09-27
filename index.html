@@ -399,49 +399,43 @@ document.addEventListener('DOMContentLoaded', function() {
   const bookBtn = document.getElementById('floating-book');
   
   if (shareBtn) {
-    shareBtn.addEventListener('click', function() {
-      // 현재 페이지 URL과 제목 복사
-      const currentUrl = window.location.href;
-      const pageTitle = document.title;
-      const shareText = `${pageTitle}\n${currentUrl}`;
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-          alert('🔗 링크가 복사되었습니다! 친구에게 공유해보세요!');
-        });
-      }
-      
-      // 팝업 표시 (app.js 로드 후)
-      if (typeof showUsageLimitPopup === 'function') {
-        showUsageLimitPopup();
-      }
-      if (typeof applyShareBonus === 'function') {
-        applyShareBonus();
-      }
-    });
-  }
-  
-  if (bookBtn) {
-    bookBtn.addEventListener('click', function() {
-      // 현재 페이지 URL과 제목 복사
-      const currentUrl = window.location.href;
-      const pageTitle = document.title;
-      const shareText = `${pageTitle}\n${currentUrl}`;
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-          alert('🔗 링크가 복사되었습니다! 마케팅 자료를 확인해보세요!');
-        });
-      }
-      
-      // 팝업 표시 (app.js 로드 후)
-      if (typeof showUsageLimitPopup === 'function') {
-        showUsageLimitPopup();
-      }
-      if (typeof applyBookBonus === 'function') {
-        applyBookBonus();
-      }
-    });
+  shareBtn.addEventListener('click', function() {
+    // 현재 페이지 URL과 제목 복사
+    const currentUrl = window.location.href;
+    const pageTitle = document.title;
+    const shareText = `${pageTitle}\n${currentUrl}`;
+    
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => {
+        // alert() 제거하고 토스트만 사용
+        showToast('🔗 링크가 복사되었습니다! 친구에게 공유해보세요!');
+      });
+    }
+    
+    // 팝업 표시 (alert 없이 바로)
+    showUsageLimitPopup();
+  });
+}
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', function() {
+    // 현재 페이지 URL과 제목 복사
+    const currentUrl = window.location.href;
+    const pageTitle = document.title;
+    const shareText = `${pageTitle}\n${currentUrl}`;
+    
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => {
+        // alert() 제거하고 토스트만 사용
+        showToast('🔗 링크가 복사되었습니다! 마케팅 자료를 확인해보세요!');
+      });
+    }
+    
+    // 팝업 표시 (alert 없이 바로)
+    showUsageLimitPopup();
+  });
+
+
   }
   
   // 호버 효과
