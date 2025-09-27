@@ -44,7 +44,7 @@ const CONFIG = {
     "cta": "https://hook.eu2.make.com/469b34r723epzhqy6cqfbryijcv78x72",
     "hso": "https://hook.eu2.make.com/4vikl7bu11rcciw7i89n9wk0nxyvi4pl",
     "swot": "https://hook.eu2.make.com/a7bw52sj72ghgqqvjov7bskxuk4lxxis",
-    "title-banger": "https://hook.eu2.make.com/wj1zi56xcnxtv2nq5rwkjk8lg5n5fbaa",
+    "title-banger": "https://hook.eu2.make.com/3ouzhllwrfc3c5gvsuhceezwaimofqdn",
     "paid-blog": "https://hook.make.com/paid-blog-webhook",
     
     // 소셜미디어 페이지별 웹훅 (2개)
@@ -55,7 +55,8 @@ const CONFIG = {
     "youtube-shorts": "https://hook.make.com/youtube-webhook",
     "menu-description": "https://hook.make.com/menu-webhook",
     "event-promotion": "https://hook.make.com/event-webhook",
-    "review-response": "https://hook.make.com/review-webhook",
+    "review-response": "https://hook.eu2.make.com/0m1z7yr62g1tbq4ole9nyn4jdivvr37u",
+    "cupang-response": "https://hook.eu2.make.com/mvqwytao6boof4sb17xhid36snape639",
     
     // 기본 웹훅
     default: "https://hook.make.com/default-webhook"
