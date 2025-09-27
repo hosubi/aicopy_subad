@@ -395,10 +395,11 @@ function showUsageLimitPopup() {
           나중에
         </button>
       </div>
-            <script src="https://ads-partners.coupang.com/g.js"></script>
-<script>
-    new PartnersCoupang.G({"id":848257,"trackingCode":"AF8239972","subId":null,"template":"carousel","width":"680","height":"140"});
-</script>
+
+      <script src="https://ads-partners.coupang.com/g.js"></script>
+      <script>
+          new PartnersCoupang.G({"id":848257,"trackingCode":"AF8239972","subId":null,"template":"carousel","width":"680","height":"140"});
+      </script>
     </div>
   `;
   
